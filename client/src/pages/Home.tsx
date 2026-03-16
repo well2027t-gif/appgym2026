@@ -142,7 +142,7 @@ export default function Home() {
       }}
     >
       <div className="h-full overflow-y-auto overscroll-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        <div className="px-4 max-w-[420px] mx-auto pt-2 pb-[calc(9rem+env(safe-area-inset-bottom))]">
+        <div className="px-4 max-w-[420px] mx-auto pt-2 pb-[calc(9.5rem+env(safe-area-inset-bottom))]">
           {/* Top brand / greeting card */}
           <motion.div
             initial={{ opacity: 0, y: -6 }}
@@ -195,7 +195,7 @@ export default function Home() {
             className="mt-2 rounded-3xl overflow-hidden shadow-2xl border border-white/30"
           >
             <div
-              className="relative h-[82px]"
+              className="relative h-[76px]"
               style={{
                 backgroundImage:
                   colorTheme === "pink"
@@ -205,8 +205,8 @@ export default function Home() {
                 backgroundPosition: "center",
               }}
             >
-              <div className="absolute inset-0 p-3.5 flex items-end">
-                <p className="text-white text-base font-black leading-snug drop-shadow">
+              <div className="absolute inset-0 p-3 flex items-end">
+                <p className="text-white text-[15px] font-black leading-snug drop-shadow">
                   Disciplina
                   <br />
                   constrói resultados.
@@ -215,7 +215,7 @@ export default function Home() {
             </div>
 
             <div
-              className="px-3.5 py-2.5 text-white"
+              className="px-3.5 py-2 text-white"
               style={{
                 background:
                   colorTheme === "pink"
@@ -246,6 +246,32 @@ export default function Home() {
             </div>
           </motion.div>
 
+          <motion.button
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            whileTap={{ scale: 0.99 }}
+            onClick={() => setLocation("/conquistas")}
+            className="mt-2 w-full rounded-2xl border border-[#DBEAFE] bg-white/95 p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] text-left"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.18em] font-black text-[#1D4ED8]">
+                  Novo painel
+                </p>
+                <p className="text-[14px] font-black text-[#0F172A]">
+                  Conquistas e recompensas
+                </p>
+                <p className="text-[10px] text-[#64748B] mt-0.5">
+                  Metas, desafios, consistência e prêmios reais.
+                </p>
+              </div>
+              <div className="h-11 w-11 rounded-xl bg-[#EFF6FF] border border-[#DBEAFE] text-[#1D4ED8] grid place-items-center shrink-0">
+                <Gift size={18} />
+              </div>
+            </div>
+          </motion.button>
+
           {/* Start workout */}
           <motion.button
             initial={{ opacity: 0, y: 8 }}
@@ -274,7 +300,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.18 }}
-            className="mt-2 bg-white/90 backdrop-blur-md rounded-3xl px-3.5 pt-2 pb-2.5 border border-[#DBEAFE] shadow-[0_12px_26px_rgba(37,99,235,0.12)] overflow-hidden relative"
+            className="mt-2 bg-white/90 backdrop-blur-md rounded-3xl px-3.5 pt-2 pb-2 border border-[#DBEAFE] shadow-[0_12px_26px_rgba(37,99,235,0.12)] overflow-hidden relative"
           >
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#93C5FD] via-[#2563EB] to-[#1D4ED8]" />
             <div className="mb-2 flex items-center justify-between">
@@ -295,7 +321,7 @@ export default function Home() {
                   <button
                     key={dow}
                     onClick={() => setLocation(`/workout/${day.id}`)}
-                    className={`flex min-h-[46px] flex-col items-center justify-center rounded-2xl border px-1 py-1 transition-all ${
+                    className={`flex min-h-[42px] flex-col items-center justify-center rounded-2xl border px-1 py-1 transition-all ${
                       active
                         ? "border-[#93C5FD] bg-[#EFF6FF]"
                         : "border-[#DBEAFE] bg-white/70 hover:bg-white"
@@ -322,7 +348,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.24 }}
-            className="mt-2.5"
+            className="mt-2"
           >
             <div className="mb-2 flex items-end justify-between">
               <div>
@@ -334,15 +360,15 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
-              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[118px]">
+            <div className="grid grid-cols-3 gap-1.5">
+              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[108px]">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
                     Peso Atual
                   </span>
                   <Scale size={14} className="text-[#1D4ED8]" />
                 </div>
-                <p className="text-[36px] leading-none font-black text-[#0F172A]">
+                <p className="text-[32px] leading-none font-black text-[#0F172A]">
                   {profile?.weight && profile.weight > 0 ? profile.weight : 94}
                 </p>
                 <p className="text-[11px] font-bold text-[#1E3A8A]">kg</p>
@@ -351,14 +377,14 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[118px]">
+              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[108px]">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
                     Treinos
                   </span>
                   <Dumbbell size={14} className="text-[#1D4ED8]" />
                 </div>
-                <p className="text-[36px] leading-none font-black text-[#0F172A] text-center mt-1">
+                <p className="text-[32px] leading-none font-black text-[#0F172A] text-center mt-1">
                   {new Set(logs.map(l => l.date)).size}
                 </p>
                 <p className="text-[11px] font-bold text-[#1E3A8A] text-center mt-1">Concluídos</p>
@@ -367,7 +393,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[118px]">
+              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[108px]">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
                     Última Foto
@@ -375,7 +401,7 @@ export default function Home() {
                   <ImageIcon size={14} className="text-[#1D4ED8]" />
                 </div>
                 <div
-                  className="h-[72px] w-full rounded-[16px] border border-[#DBEAFE] overflow-hidden"
+                  className="h-[62px] w-full rounded-[16px] border border-[#DBEAFE] overflow-hidden"
                   style={{
                     backgroundImage: `url(${latestProgressPhoto})`,
                     backgroundSize: "cover",
@@ -386,31 +412,6 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <motion.button
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.28 }}
-            whileTap={{ scale: 0.99 }}
-            onClick={() => setLocation("/conquistas")}
-            className="mt-2.5 w-full rounded-2xl border border-[#DBEAFE] bg-white/95 p-3 shadow-[0_10px_24px_rgba(37,99,235,0.08)] text-left"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.18em] font-black text-[#1D4ED8]">
-                  Novo painel
-                </p>
-                <p className="text-[15px] font-black text-[#0F172A]">
-                  Conquistas e recompensas
-                </p>
-                <p className="text-[11px] text-[#64748B] mt-0.5">
-                  Metas, desafios, consistência e prêmios reais.
-                </p>
-              </div>
-              <div className="h-12 w-12 rounded-xl bg-[#EFF6FF] border border-[#DBEAFE] text-[#1D4ED8] grid place-items-center shrink-0">
-                <Gift size={20} />
-              </div>
-            </div>
-          </motion.button>
         </div>
       </div>
 
