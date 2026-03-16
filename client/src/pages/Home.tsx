@@ -206,12 +206,17 @@ export default function Home() {
                   </span>
                 </p>
               </div>
-              <div className="hidden sm:flex flex-col items-end gap-1">
-                <span className="inline-flex items-center rounded-full bg-[#EFF6FF] px-2 py-0.5 text-[10px] font-bold text-[#1D4ED8] whitespace-nowrap">
-                  Nível focado
-                </span>
-                <span className="text-[10px] text-[#64748B] font-semibold whitespace-nowrap">
-                  Dia {todayDay.shortLabel}
+              <div className="flex flex-col items-end gap-1 shrink-0">
+                <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-black whitespace-nowrap border"
+                  style={{
+                    background: colorTheme === "pink"
+                      ? "linear-gradient(135deg, #FCE7F3, #FBCFE8)"
+                      : "linear-gradient(135deg, #DBEAFE, #BFDBFE)",
+                    borderColor: colorTheme === "pink" ? "#F9A8D4" : "#93C5FD",
+                    color: colorTheme === "pink" ? "#BE185D" : "#1D4ED8",
+                  }}
+                >
+                  ⭐ Premium
                 </span>
               </div>
             </div>
@@ -378,9 +383,6 @@ export default function Home() {
                 <p className="text-[15px] font-black text-[#0F172A]">Sua Evolução</p>
                 <p className="text-[10px] text-[#64748B]">Indicadores principais</p>
               </div>
-              <span className="rounded-full border border-[#DBEAFE] bg-white/80 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-[#1D4ED8]">
-                premium
-              </span>
             </div>
 
             <div className="grid grid-cols-3 gap-1.5 items-start">
@@ -463,7 +465,7 @@ export default function Home() {
                   className="block w-full"
                 >
                   <div
-                    className="h-[156px] w-full rounded-[16px] border border-[#DBEAFE] overflow-hidden"
+                    className="h-[120px] w-full rounded-[16px] border border-[#DBEAFE] overflow-hidden"
                     style={{
                       backgroundImage: `url(${latestProgressPhoto})`,
                       backgroundSize: "cover",
