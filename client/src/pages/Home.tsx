@@ -142,7 +142,7 @@ export default function Home() {
       }}
     >
       <div className="h-full overflow-y-auto overscroll-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        <div className="px-4 max-w-[420px] mx-auto pt-2 pb-[calc(9.5rem+env(safe-area-inset-bottom))]">
+        <div className="px-4 max-w-[420px] mx-auto pt-2 pb-[calc(12rem+env(safe-area-inset-bottom))]">
           {/* Top brand / greeting card */}
           <motion.div
             initial={{ opacity: 0, y: -6 }}
