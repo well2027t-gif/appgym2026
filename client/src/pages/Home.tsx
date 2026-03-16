@@ -2,7 +2,7 @@
 // Design: Clean, professional interface with smooth modal interactions
 
 import { motion } from "framer-motion";
-import { Bolt, ChevronLeft, ChevronRight, Dumbbell, Flame, ImageIcon, Scale, Trophy, X } from "lucide-react";
+import { Activity, Bolt, ChevronLeft, ChevronRight, Dumbbell, Flame, ImageIcon, Scale, Timer, Trophy, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import {
@@ -385,7 +385,10 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-1.5 items-start">
+            {/* Grid: 2 cols left (Peso + Treinos + Atividade), 1 col right (Foto tall) */}
+            <div className="grid grid-cols-3 gap-1.5" style={{ gridTemplateRows: "auto auto" }}>
+
+              {/* Peso Atual — row 1, col 1 */}
               <div className="h-[112px] rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] flex flex-col">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
@@ -407,14 +410,13 @@ export default function Home() {
                   <div className="h-1.5 w-full rounded-full bg-[#EFF6FF] overflow-hidden">
                     <div
                       className="h-full rounded-full bg-linear-to-r from-[#3B82F6] to-[#1D4ED8]"
-                      style={{
-                        width: `${Math.min(100, Math.round(((profile?.weight ?? 94) / 100) * 100))}%`,
-                      }}
+                      style={{ width: `${Math.min(100, Math.round(((profile?.weight ?? 94) / 100) * 100))}%` }}
                     />
                   </div>
                 </div>
               </div>
 
+              {/* Treinos — row 1, col 2 */}
               <div className="h-[112px] rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] flex flex-col">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
@@ -449,12 +451,16 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-1.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[112px]">
-                <div className="mb-1.5 px-1 flex items-center justify-between">
+              {/* Última Foto — rows 1+2, col 3 */}
+              <div
+                className="rounded-[22px] border border-[#DBEAFE] bg-white p-1.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] flex flex-col"
+                style={{ gridRow: "1 / 3", gridColumn: "3 / 4" }}
+              >
+                <div className="mb-1 px-0.5 flex items-center justify-between shrink-0">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
                     Última Foto
                   </span>
-                  <ImageIcon size={14} className="text-[#1D4ED8]" />
+                  <ImageIcon size={13} className="text-[#1D4ED8]" />
                 </div>
                 <button
                   type="button"
@@ -462,10 +468,10 @@ export default function Home() {
                     setPhotoIndex(0);
                     setShowPhotoGallery(true);
                   }}
-                  className="block w-full"
+                  className="flex-1 block w-full min-h-0"
                 >
                   <div
-                    className="h-[156px] w-full rounded-[12px] border border-[#DBEAFE] overflow-hidden"
+                    className="h-full w-full rounded-[10px] overflow-hidden"
                     style={{
                       backgroundImage: `url(${latestProgressPhoto})`,
                       backgroundSize: "cover",
@@ -474,6 +480,49 @@ export default function Home() {
                   />
                 </button>
               </div>
+
+              {/* Atividade de hoje — row 2, cols 1+2 — compact single row */}
+              <div
+                className="rounded-[22px] border border-[#DBEAFE] bg-white px-2.5 py-2 shadow-[0_8px_18px_rgba(37,99,235,0.07)] flex items-center justify-between"
+                style={{ gridRow: "2 / 3", gridColumn: "1 / 3" }}
+              >
+                {/* Calorias */}
+                <div className="flex items-center gap-1.5">
+                  <div className="h-6 w-6 rounded-full flex items-center justify-center shrink-0"
+                    style={{ background: colorTheme === "pink" ? "linear-gradient(135deg,#FCE7F3,#FBCFE8)" : "linear-gradient(135deg,#DBEAFE,#BFDBFE)" }}>
+                    <Flame size={12} style={{ color: colorTheme === "pink" ? "#DB2777" : "#2563EB" }} />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-black text-[#0F172A] leading-none">420</p>
+                    <p className="text-[8px] text-[#64748B]">Kcal</p>
+                  </div>
+                </div>
+                <div className="w-px h-7 bg-[#EFF6FF]" />
+                {/* Passos */}
+                <div className="flex items-center gap-1.5">
+                  <div className="h-6 w-6 rounded-full flex items-center justify-center shrink-0"
+                    style={{ background: colorTheme === "pink" ? "linear-gradient(135deg,#FCE7F3,#FBCFE8)" : "linear-gradient(135deg,#DBEAFE,#BFDBFE)" }}>
+                    <Timer size={12} style={{ color: colorTheme === "pink" ? "#DB2777" : "#2563EB" }} />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-black text-[#0F172A] leading-none">6.2k</p>
+                    <p className="text-[8px] text-[#64748B]">Passos</p>
+                  </div>
+                </div>
+                <div className="w-px h-7 bg-[#EFF6FF]" />
+                {/* Treinos */}
+                <div className="flex items-center gap-1.5">
+                  <div className="h-6 w-6 rounded-full flex items-center justify-center shrink-0"
+                    style={{ background: colorTheme === "pink" ? "linear-gradient(135deg,#FCE7F3,#FBCFE8)" : "linear-gradient(135deg,#DBEAFE,#BFDBFE)" }}>
+                    <Activity size={12} style={{ color: colorTheme === "pink" ? "#DB2777" : "#2563EB" }} />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-black text-[#0F172A] leading-none">{completedTrainingsCount}</p>
+                    <p className="text-[8px] text-[#64748B]">Treinos</p>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </motion.div>
 
