@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, CheckCircle2, MessageCircle, Star, Stethoscope, UserRoundCog } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Gift, MessageCircle, Star, Stethoscope, TicketPercent, UserRoundCog, X } from "lucide-react";
 import { useLocation } from "wouter";
 import BottomNav from "@/components/BottomNav";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,6 +10,15 @@ import {
   type ProfessionalType,
 } from "@/lib/professionalServices";
 
+const ALL_REWARDS: Record<string, { title: string; desc: string }> = {
+  "cupom-10":       { title: "Cupom 10% em suplementos", desc: "Desconto em parceiros oficiais" },
+  "sessao-nutri":   { title: "Sessão gratuita c/ nutricionista", desc: "Consulta online de orientação inicial" },
+  "sessao-personal":{ title: "Sessão gratuita c/ personal", desc: "Ajuste técnico e evolução de treino" },
+  "brinde-kit":     { title: "Brinde premium do app", desc: "Camiseta ou squeeze exclusivo" },
+};
+
+const COUPON_USED_KEY = "gymtracker_coupon_used_v1";
+
 export default function ProfessionalsPage() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
@@ -17,6 +26,23 @@ export default function ProfessionalsPage() {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<ProfessionalDoc[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
+
+  const [couponModal, setCouponModal] = useState<{ id: string; title: string } | null>(null);
+  const [couponStep, setCouponStep] = useState<"type" | "professional">("type");
+  const [couponType, setCouponType] = useState<ProfessionalType | null>(null);
+  const [couponProfessionals, setCouponProfessionals] = useState<ProfessionalDoc[]>([]);
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  const usedCoupons: Record<string, string> = (() => {
+    try { return JSON.parse(localStorage.getItem(COUPON_USED_KEY) ?? "{}"); }
+    catch { return {}; }
+  })();
+
+  const redeemedIds: string[] = (() => {
+    try { return JSON.parse(localStorage.getItem("gymtracker_redeemed_rewards_v1") ?? "[]"); }
+    catch { return []; }
+  })();
+  const redeemedRewards = redeemedIds.map(id => ({ id, ...ALL_REWARDS[id] })).filter(r => r.title);
 
   useEffect(() => {
     let mounted = true;
@@ -59,6 +85,40 @@ export default function ProfessionalsPage() {
     }
   }
 
+  function openUseCoupon(id: string, title: string) {
+    setCouponModal({ id, title });
+    setCouponStep("type");
+    setCouponType(null);
+    setCouponProfessionals([]);
+  }
+
+  function closeCouponModal() {
+    setCouponModal(null);
+    setCouponStep("type");
+    setCouponType(null);
+    setCouponProfessionals([]);
+  }
+
+  async function handleChooseCouponType(choice: ProfessionalType) {
+    setCouponType(choice);
+    setCouponLoading(true);
+    try {
+      const list = await listProfessionals(choice);
+      setCouponProfessionals(list);
+      setCouponStep("professional");
+    } finally {
+      setCouponLoading(false);
+    }
+  }
+
+  function handleConfirmCouponWith(professional: ProfessionalDoc) {
+    if (!couponModal) return;
+    const prev: Record<string, string> = JSON.parse(localStorage.getItem(COUPON_USED_KEY) ?? "{}");
+    prev[couponModal.title] = professional.displayName;
+    localStorage.setItem(COUPON_USED_KEY, JSON.stringify(prev));
+    closeCouponModal();
+  }
+
   return (
     <div className="min-h-screen bg-linear-to-b from-[#F5F9FF] to-[#E7F0FF] pb-28">
       <div className="sticky top-0 z-30 bg-white/85 backdrop-blur border-b border-[#DBEAFE]">
@@ -84,6 +144,41 @@ export default function ProfessionalsPage() {
             Escolha um profissional e inicie o chat imediatamente.
           </p>
         </div>
+
+        {/* Redeemed coupons banner */}
+        {redeemedRewards.length > 0 && (
+          <div className="rounded-2xl border border-[#BFDBFE] bg-[#EFF6FF] p-3 space-y-2">
+            <div className="flex items-center gap-2 mb-1">
+              <Gift size={15} className="text-[#2563EB]" />
+              <p className="text-[11px] font-black text-[#1D4ED8] uppercase tracking-wide">Seus cupons disponíveis</p>
+            </div>
+            {redeemedRewards.map((r) => (
+              <div key={r.id} className="flex items-center gap-3 rounded-xl border border-[#DBEAFE] bg-white px-3 py-2.5">
+                <span className="h-8 w-8 rounded-lg bg-[#DBEAFE] text-[#2563EB] flex items-center justify-center shrink-0">
+                  <TicketPercent size={15} />
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[12px] font-black text-[#0F172A] truncate">{r.title}</p>
+                  <p className="text-[10px] text-[#64748B]">{r.desc}</p>
+                </div>
+                {usedCoupons[r.title] ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#DCFCE7] border border-[#BBF7D0] px-2.5 py-1 text-[10px] font-black text-[#15803D] shrink-0">
+                    <CheckCircle2 size={11} /> Com {usedCoupons[r.title]}
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => openUseCoupon(r.id, r.title)}
+                    className="shrink-0 rounded-lg px-3 py-1.5 text-[10px] font-black text-white"
+                    style={{ background: "linear-gradient(135deg,#3B82F6,#1D4ED8)" }}
+                  >
+                    Usar
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="rounded-2xl p-1 bg-white border border-[#DBEAFE] grid grid-cols-2 gap-1">
           <button
@@ -167,6 +262,114 @@ export default function ProfessionalsPage() {
           </div>
         )}
       </div>
+
+      {/* Modal: Usar cupom → tipo → profissional */}
+      {couponModal && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-[#0F172A]/60 backdrop-blur-sm px-4 pb-8 pt-4">
+          <div className="w-full max-w-[420px] rounded-3xl bg-white border border-[#DBEAFE] shadow-2xl overflow-hidden">
+            <div className="px-4 pt-4 pb-3 border-b border-[#EFF6FF] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="h-9 w-9 rounded-xl bg-[#DBEAFE] text-[#2563EB] flex items-center justify-center">
+                  <TicketPercent size={18} />
+                </span>
+                <div>
+                  <p className="text-[12px] font-black text-[#1D4ED8] uppercase tracking-wide">Usar cupom</p>
+                  <p className="text-[14px] font-black text-[#0F172A] truncate">{couponModal.title}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={closeCouponModal}
+                className="h-8 w-8 rounded-lg border border-[#DBEAFE] text-[#64748B] flex items-center justify-center"
+              >
+                <X size={14} />
+              </button>
+            </div>
+
+            <div className="p-4">
+              {couponStep === "type" && (
+                <>
+                  <p className="text-[13px] font-black text-[#0F172A] mb-3">Usar com qual tipo de profissional?</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => handleChooseCouponType("personal")}
+                      disabled={couponLoading}
+                      className="rounded-xl border-2 border-[#DBEAFE] bg-[#F8FBFF] p-4 flex flex-col items-center gap-2 hover:border-[#2563EB] hover:bg-[#EFF6FF] transition disabled:opacity-60"
+                    >
+                      <UserRoundCog size={28} className="text-[#2563EB]" />
+                      <span className="text-[13px] font-black text-[#0F172A]">Personal trainer</span>
+                      <span className="text-[10px] text-[#64748B]">Treino e evolução</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleChooseCouponType("nutritionist")}
+                      disabled={couponLoading}
+                      className="rounded-xl border-2 border-[#DBEAFE] bg-[#F8FBFF] p-4 flex flex-col items-center gap-2 hover:border-[#2563EB] hover:bg-[#EFF6FF] transition disabled:opacity-60"
+                    >
+                      <Stethoscope size={28} className="text-[#2563EB]" />
+                      <span className="text-[13px] font-black text-[#0F172A]">Nutricionista</span>
+                      <span className="text-[10px] text-[#64748B]">Alimentação e metas</span>
+                    </button>
+                  </div>
+                  {couponLoading && (
+                    <p className="text-center text-[12px] text-[#64748B] mt-3">Carregando profissionais...</p>
+                  )}
+                </>
+              )}
+
+              {couponStep === "professional" && (
+                <>
+                  <p className="text-[13px] font-black text-[#0F172A] mb-3">
+                    Escolha o profissional para usar o cupom
+                  </p>
+                  <div className="space-y-2 max-h-[280px] overflow-y-auto">
+                    {couponProfessionals.length === 0 ? (
+                      <p className="text-[12px] text-[#64748B] py-4 text-center">Nenhum profissional nesta categoria.</p>
+                    ) : (
+                      couponProfessionals.map(pro => (
+                        <button
+                          key={pro.id}
+                          type="button"
+                          onClick={() => handleConfirmCouponWith(pro)}
+                          className="w-full flex items-center gap-3 rounded-xl border border-[#DBEAFE] bg-[#F8FBFF] p-3 text-left hover:bg-[#EFF6FF] transition"
+                        >
+                          <div className="h-12 w-12 rounded-xl overflow-hidden bg-white border border-[#DBEAFE] shrink-0">
+                            {pro.avatarUrl ? (
+                              <img src={pro.avatarUrl} alt={pro.displayName} className="h-full w-full object-cover" />
+                            ) : pro.type === "personal" ? (
+                              <div className="h-full w-full flex items-center justify-center text-[#2563EB]">
+                                <UserRoundCog size={22} />
+                              </div>
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center text-[#2563EB]">
+                                <Stethoscope size={22} />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[14px] font-black text-[#0F172A] truncate">{pro.displayName}</p>
+                            <p className="text-[11px] text-[#64748B] truncate">{pro.bio || "Profissional"}</p>
+                          </div>
+                          <span className="text-[11px] font-black text-[#2563EB] shrink-0">Usar cupom</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setCouponStep("type")}
+                    className="mt-3 w-full py-2 rounded-xl border border-[#DBEAFE] text-[12px] font-bold text-[#64748B]"
+                  >
+                    ← Voltar
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <BottomNav />
     </div>
   );

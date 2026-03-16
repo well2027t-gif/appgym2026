@@ -18,7 +18,35 @@ export default function ConversationPage() {
   );
   const [isAutoTyping, setIsAutoTyping] = useState(false);
   const [showProfessionalProfile, setShowProfessionalProfile] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(() =>
+    typeof window !== "undefined" ? window.visualViewport?.height ?? window.innerHeight : 0,
+  );
   const senderId = user?.uid ?? getGuestId();
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.visualViewport) return;
+    const vv = window.visualViewport;
+    const update = () => setViewportHeight(vv.height);
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    update();
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const prevOverflow = document.body.style.overflow;
+    const prevTouchAction = document.documentElement.style.touchAction;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.touchAction = "pan-x pan-y";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.documentElement.style.touchAction = prevTouchAction;
+    };
+  }, []);
 
   useEffect(() => {
     if (!conversationId) return;
@@ -83,9 +111,15 @@ export default function ConversationPage() {
   }
 
   return (
-    <div className="h-dvh overflow-hidden bg-linear-to-b from-[#F5F9FF] to-[#EAF2FF]">
-      <div className="mx-auto max-w-[420px] h-full px-3 py-3">
-      <div className="h-full min-h-0 rounded-3xl border border-[#DCE8FF] bg-white/92 overflow-hidden flex flex-col">
+    <div
+      className="fixed inset-x-0 top-0 overflow-hidden bg-linear-to-b from-[#F5F9FF] to-[#EAF2FF] flex flex-col z-30"
+      style={{
+        height: viewportHeight ? `${viewportHeight}px` : "100dvh",
+        maxHeight: "100dvh",
+      }}
+    >
+      <div className="mx-auto max-w-[420px] flex-1 min-h-0 flex flex-col px-3 py-3 w-full">
+      <div className="flex-1 min-h-0 rounded-3xl border border-[#DCE8FF] bg-white/92 overflow-hidden flex flex-col">
       <div className="px-3 py-3 border-b border-[#E6EEFF]">
         <div className="flex items-center gap-2">
           <button
@@ -187,14 +221,15 @@ export default function ConversationPage() {
         </div>
       </div>
 
-      <div className="border-t border-[#E6EEFF]">
+      <div className="border-t border-[#E6EEFF] shrink-0 bg-white/95">
         <div className="px-3 pt-2 pb-[calc(0.65rem+env(safe-area-inset-bottom))]">
           <div className="flex items-center gap-2">
           <input
             value={text}
             onChange={e => setText(e.target.value)}
             placeholder="Digite sua mensagem..."
-            className="flex-1 h-11 rounded-xl border border-[#DBEAFE] px-3 text-sm outline-none focus:border-[#2563EB]"
+            className="flex-1 min-w-0 h-11 rounded-xl border border-[#DBEAFE] px-3 text-sm outline-none focus:border-[#2563EB]"
+            style={{ fontSize: "16px" }}
           />
           <button
             onClick={handleSend}

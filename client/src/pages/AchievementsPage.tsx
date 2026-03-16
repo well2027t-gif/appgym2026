@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -9,10 +9,13 @@ import {
   HeartPulse,
   Medal,
   Sparkles,
+  Star,
   TicketPercent,
   Trophy,
+  X,
   Zap,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import BottomNav from "@/components/BottomNav";
 import { getCompletedWorkouts, getProgressLogs } from "@/lib/workoutData";
@@ -28,11 +31,27 @@ const LEADERBOARD = [
   { rank: 5, name: "Rafael S.", points: 760, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80", badge: "5º" },
 ];
 
+type RewardPopup = { title: string; description: string; icon: React.ReactNode } | null;
+
 export default function AchievementsPage() {
   const [, setLocation] = useLocation();
   const { colorTheme } = useTheme();
   const completed = getCompletedWorkouts();
   const logs = getProgressLogs();
+  const [rewardPopup, setRewardPopup] = useState<RewardPopup>(null);
+
+  function handleRedeem(item: { id: string; title: string; description: string; icon: React.ReactNode }) {
+    // Save to localStorage so profile/professionals can read it
+    try {
+      const key = "gymtracker_redeemed_rewards_v1";
+      const existing: string[] = JSON.parse(localStorage.getItem(key) ?? "[]");
+      if (!existing.includes(item.id)) {
+        existing.push(item.id);
+        localStorage.setItem(key, JSON.stringify(existing));
+      }
+    } catch {}
+    setRewardPopup({ title: item.title, description: item.description, icon: item.icon });
+  }
 
   const primary = colorTheme === "pink" ? "#DB2777" : "#2563EB";
   const primaryLight = colorTheme === "pink" ? "#FCE7F3" : "#DBEAFE";
@@ -51,10 +70,10 @@ export default function AchievementsPage() {
   }, [completed, logs]);
 
   const rewards = [
-    { id: "cupom-10", title: "Cupom 10% suplementos", description: "Parceiros oficiais.", pointsRequired: 120, unlocked: visual.points >= 120, icon: <TicketPercent size={16} /> },
-    { id: "sessao-nutri", title: "Sessão com nutricionista", description: "Consulta online gratuita.", pointsRequired: 240, unlocked: visual.points >= 240, icon: <HeartPulse size={16} /> },
-    { id: "sessao-personal", title: "Sessão com personal", description: "Ajuste técnico de treino.", pointsRequired: 320, unlocked: visual.points >= 320, icon: <Dumbbell size={16} /> },
-    { id: "brinde-kit", title: "Brinde premium", description: "Camiseta ou squeeze exclusivo.", pointsRequired: 420, unlocked: visual.points >= 420, icon: <Gift size={16} /> },
+    { id: "cupom-10", title: "Cupom 10% suplementos", description: "Parceiros oficiais.", pointsRequired: 120, unlocked: true, icon: <TicketPercent size={16} /> },
+    { id: "sessao-nutri", title: "Sessão com nutricionista", description: "Consulta online gratuita.", pointsRequired: 240, unlocked: true, icon: <HeartPulse size={16} /> },
+    { id: "sessao-personal", title: "Sessão com personal", description: "Ajuste técnico de treino.", pointsRequired: 320, unlocked: true, icon: <Dumbbell size={16} /> },
+    { id: "brinde-kit", title: "Brinde premium", description: "Camiseta ou squeeze exclusivo.", pointsRequired: 420, unlocked: true, icon: <Gift size={16} /> },
   ];
 
   const challenges = [
@@ -89,27 +108,59 @@ export default function AchievementsPage() {
       <div className="mx-auto max-w-[420px] px-4 pt-4 space-y-3">
 
         {/* User stats hero */}
-        <div className="rounded-3xl overflow-hidden shadow-[0_12px_28px_rgba(37,99,235,0.18)]">
-          <div className="px-4 pt-4 pb-5 text-white relative" style={{ background: primaryGrad }}>
-            <div className="absolute right-0 top-0 w-32 h-32 rounded-full bg-white/10 blur-2xl -translate-y-8 translate-x-8" />
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/70 mb-1">Seu desempenho</p>
-            <p className="text-[24px] font-black leading-none">{visual.points} <span className="text-[14px] font-bold text-white/70">pts</span></p>
-            <p className="text-[12px] font-bold text-white/80 mt-0.5">2º lugar no ranking · VIP</p>
-            <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="rounded-3xl overflow-hidden shadow-[0_16px_32px_rgba(15,23,42,0.20)]">
+          {/* Photo background section */}
+          <div
+            className="relative px-4 pt-4 pb-5 text-white"
+            style={{
+              backgroundImage: `linear-gradient(160deg, rgba(10,15,40,0.88) 0%, rgba(10,15,40,0.72) 60%, rgba(10,15,40,0.55) 100%), url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80)`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            {/* Subtle glow */}
+            <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-30 -translate-y-10 translate-x-10"
+              style={{ background: colorTheme === "pink" ? "#EC4899" : "#3B82F6" }} />
+
+            {/* Top row */}
+            <div className="relative flex items-center justify-between mb-3">
+              <span className="text-[10px] font-black uppercase tracking-[0.22em] text-white/60">Seu desempenho</span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-black text-white backdrop-blur-sm">
+                <Trophy size={10} className="text-[#FCD34D]" /> 2º no ranking
+              </span>
+            </div>
+
+            {/* Points */}
+            <div className="relative">
+              <p className="text-[38px] font-black leading-none tracking-tight">
+                {visual.points}
+                <span className="ml-1.5 text-[16px] font-bold text-white/50">pontos</span>
+              </p>
+              <div className="mt-1 flex items-center gap-1.5">
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 border border-white/20 px-2 py-0.5 text-[9px] font-black text-white">
+                  <Sparkles size={9} className="text-[#FCD34D]" /> VIP
+                </span>
+                <span className="text-[11px] text-white/60">· Continuando a evoluir 💪</span>
+              </div>
+            </div>
+
+            {/* Stats row */}
+            <div className="relative mt-4 grid grid-cols-3 gap-2">
               {[
-                { label: "Sessões", value: visual.sessions, icon: <Dumbbell size={12}/> },
-                { label: "Consistência", value: `${visual.consistency}%`, icon: <Trophy size={12}/> },
-                { label: "Sequência", value: "3 dias", icon: <Flame size={12}/> },
+                { label: "Sessões", value: String(visual.sessions), icon: <Dumbbell size={13}/> },
+                { label: "Consistência", value: `${visual.consistency}%`, icon: <Trophy size={13}/> },
+                { label: "Sequência", value: "3 dias", icon: <Flame size={13}/> },
               ].map(s => (
-                <div key={s.label} className="rounded-xl bg-white/15 border border-white/20 px-2 py-2 text-center">
-                  <div className="flex justify-center mb-0.5 text-white/70">{s.icon}</div>
-                  <p className="text-[15px] font-black leading-none">{s.value}</p>
-                  <p className="text-[8px] text-white/60 mt-0.5">{s.label}</p>
+                <div key={s.label} className="rounded-2xl bg-white/10 border border-white/15 px-2 py-2.5 text-center backdrop-blur-sm">
+                  <div className="flex justify-center mb-1 text-white/60">{s.icon}</div>
+                  <p className="text-[17px] font-black leading-none">{s.value}</p>
+                  <p className="text-[8px] font-semibold text-white/50 mt-0.5 uppercase tracking-wide">{s.label}</p>
                 </div>
               ))}
             </div>
           </div>
-          {/* week progress bar */}
+
+          {/* Week progress bar — white strip */}
           <div className="bg-white px-4 py-3">
             <div className="flex items-center justify-between text-[11px] font-black mb-1.5">
               <span className="text-[#0F172A]">Meta da semana</span>
@@ -215,19 +266,20 @@ export default function AchievementsPage() {
           </div>
           <div className="grid grid-cols-2 gap-2">
             {rewards.map(item => (
-              <div key={item.id} className={`rounded-xl border p-3 flex flex-col gap-1.5 ${item.unlocked ? "border-green-200 bg-green-50" : "border-[#DBEAFE] bg-[#FAFCFF]"}`}>
-                <span className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: item.unlocked ? "#DCFCE7" : primaryLight, color: item.unlocked ? "#15803D" : primary }}>
+              <div key={item.id} className="rounded-xl border p-3 flex flex-col gap-1.5"
+                style={{ borderColor: primary + "33", background: primaryLight }}>
+                <span className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: "white", color: primary }}>
                   {item.icon}
                 </span>
                 <p className="text-[11px] font-black text-[#0F172A] leading-tight">{item.title}</p>
-                <p className="text-[9px] text-[#64748B]">{item.pointsRequired} pts</p>
+                <p className="text-[9px]" style={{ color: primary + "99" }}>{item.pointsRequired} pts</p>
                 <button
                   type="button"
-                  disabled={!item.unlocked}
-                  className="mt-auto rounded-lg py-1 text-[10px] font-black text-white disabled:opacity-40"
-                  style={{ background: item.unlocked ? "#16A34A" : primaryGrad }}
+                  onClick={() => handleRedeem(item)}
+                  className="mt-auto rounded-lg py-1.5 text-[10px] font-black text-white"
+                  style={{ background: primaryGrad }}
                 >
-                  {item.unlocked ? "✓ Resgatar" : "Bloqueado"}
+                  🎁 Resgatar
                 </button>
               </div>
             ))}
@@ -236,6 +288,130 @@ export default function AchievementsPage() {
 
       </div>
       <BottomNav />
+
+      {/* Reward redemption popup */}
+      <AnimatePresence>
+        {rewardPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[80] flex items-center justify-center px-6"
+            style={{ background: "rgba(10,15,40,0.75)", backdropFilter: "blur(6px)" }}
+            onClick={() => setRewardPopup(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0, y: 40 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 18, stiffness: 260 }}
+              className="relative w-full max-w-[340px] rounded-3xl overflow-hidden text-center shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Gradient background */}
+              <div className="px-6 pt-8 pb-6 text-white relative"
+                style={{
+                  background: colorTheme === "pink"
+                    ? "linear-gradient(160deg,#1a0a2e,#6b1050,#1a0a2e)"
+                    : "linear-gradient(160deg,#0a0f28,#1a3a8f,#0a0f28)",
+                }}>
+                {/* Glowing circles decoration */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full blur-3xl opacity-40"
+                  style={{ background: colorTheme === "pink" ? "#EC4899" : "#3B82F6" }} />
+
+                {/* Stars */}
+                <div className="flex justify-center gap-1 mb-4 relative">
+                  {[...Array(5)].map((_, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ scale: 0, rotate: -30 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ delay: 0.15 + i * 0.07, type: "spring", stiffness: 300 }}
+                    >
+                      <Star size={20} fill="#FCD34D" className="text-[#FCD34D]" />
+                    </motion.span>
+                  ))}
+                </div>
+
+                {/* Trophy icon */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 260 }}
+                  className="mx-auto h-16 w-16 rounded-2xl flex items-center justify-center mb-4 border border-white/20"
+                  style={{ background: "rgba(255,255,255,0.12)" }}
+                >
+                  <span className="text-3xl">🎉</span>
+                </motion.div>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-[22px] font-black leading-tight mb-1"
+                >
+                  Parabéns!
+                </motion.p>
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.38 }}
+                  className="text-[13px] font-bold text-white/70 mb-3"
+                >
+                  Você conquistou sua recompensa
+                </motion.p>
+
+                {/* Reward card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.45 }}
+                  className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm text-left flex items-center gap-3"
+                >
+                  <span className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 bg-white/20 text-white">
+                    {rewardPopup.icon}
+                  </span>
+                  <div>
+                    <p className="text-[13px] font-black leading-snug">{rewardPopup.title}</p>
+                    <p className="text-[10px] text-white/60 mt-0.5">{rewardPopup.description}</p>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.55 }}
+                  className="mt-3 rounded-xl border border-white/10 bg-white/08 px-3 py-2 text-[11px] text-white/60"
+                >
+                  ✅ Cupom salvo no seu perfil — o profissional verá na hora da contratação.
+                </motion.div>
+              </div>
+
+              {/* Close button */}
+              <button
+                type="button"
+                onClick={() => setRewardPopup(null)}
+                className="w-full py-4 font-black text-[14px]"
+                style={{
+                  background: colorTheme === "pink" ? "#DB2777" : "#2563EB",
+                  color: "white",
+                }}
+              >
+                Incrível, obrigado! 🙌
+              </button>
+
+              {/* X button corner */}
+              <button
+                type="button"
+                onClick={() => setRewardPopup(null)}
+                className="absolute top-3 right-3 h-7 w-7 rounded-full bg-white/15 flex items-center justify-center text-white"
+              >
+                <X size={13} />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
