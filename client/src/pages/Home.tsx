@@ -49,6 +49,13 @@ export default function Home() {
 
   const program = getActiveWorkoutProgram();
 
+  const greeting = useMemo(() => {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 12) return { text: "Bom dia", emoji: "☀️" };
+    if (h >= 12 && h < 18) return { text: "Boa tarde", emoji: "🌤️" };
+    return { text: "Boa noite", emoji: "🌙" };
+  }, []);
+
   // Order: Monday to Sunday
   const orderedDays = [1, 2, 3, 4, 5, 6, 0]
     .map(dow => program.find(d => d.dayOfWeek === dow))
@@ -180,27 +187,26 @@ export default function Home() {
             className="relative mb-1.5 -mx-3"
           >
             <div className="absolute inset-x-6 -top-2 h-6 rounded-full bg-gradient-to-r from-[#DBEAFE] to-transparent blur-xl opacity-70" />
-            <div className="relative flex items-center gap-3 rounded-2xl bg-white/95 border border-[#DBEAFE] shadow px-3 py-2">
+            <div className="relative flex items-center gap-2.5 rounded-2xl bg-white/95 border border-[#DBEAFE] shadow px-3 py-1.5">
               <div className="shrink-0">
-                <div className="w-12 h-12 rounded-full bg-white border border-[#DBEAFE] flex items-center justify-center shadow-md">
+                <div className="w-14 h-14 rounded-full bg-white border-2 border-[#DBEAFE] flex items-center justify-center shadow-md">
                   <img
                     src={profile?.photoDataUrl || DEFAULT_PROFILE_PHOTO}
                     alt="Foto do perfil"
-                    className="w-10 h-10 rounded-full object-cover"
+                    className="w-[52px] h-[52px] rounded-full object-cover"
                   />
                 </div>
               </div>
-              <div className="flex-1 min-w-0 pl-0.5">
-                <p className="text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.18em]">
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.16em] leading-none">
                   Seu coach diário
                 </p>
-                <p className="text-[12px] font-black text-[#0F172A] truncate">
-                  Bom dia,{" "}
-                  {profile?.name && profile.name.trim().length > 0 ? profile.name : "Welington"} 💪
+                <p className="text-[14px] font-black text-[#0F172A] truncate leading-snug">
+                  {greeting.text}, {profile?.name && profile.name.trim().length > 0 ? profile.name : "Welington"} {greeting.emoji}
                 </p>
-                <p className="text-[9px] text-[#1E3A8A] mt-0.5 leading-tight">
-                  <Flame size={12} className="inline-block mr-1 text-[#2563EB]" />
-                  Treino de hoje:{" "}
+                <p className="text-[10px] text-[#1E3A8A] leading-tight">
+                  <Flame size={11} className="inline-block mr-0.5 text-[#2563EB]" />
+                  Treino:{" "}
                   <span className="font-bold text-[#1D4ED8] underline decoration-[#1D4ED8]/40">
                     {headlineWorkoutName}
                   </span>
