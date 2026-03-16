@@ -55,11 +55,29 @@ export default function CoachTaiWidget({
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-4 z-40 rounded-full bg-[#1D4ED8] text-white shadow-xl px-4 py-3 flex items-center gap-2"
-        style={{ boxShadow: "0 16px 28px rgba(29, 78, 216, 0.35)" }}
+        className="fixed bottom-32 right-4 z-40"
+        aria-label="Abrir Coach TAI"
       >
-        <MessageCircle size={18} />
-        <span className="text-sm font-black">Coach TAI</span>
+        <span className="absolute inset-0 rounded-[28px] bg-[#1D4ED8]/25 blur-xl scale-110" />
+        <span
+          className="relative flex items-center gap-2 rounded-[26px] border border-white/40 px-3 py-2.5 text-white backdrop-blur-md overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(37,99,235,0.98), rgba(29,78,216,0.92) 55%, rgba(15,23,42,0.95))",
+            boxShadow: "0 18px 30px rgba(29, 78, 216, 0.30), inset 0 1px 0 rgba(255,255,255,0.22)",
+          }}
+        >
+          <span className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.26),transparent_42%)]" />
+          <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-white/16 border border-white/20">
+            <Sparkles size={16} />
+          </span>
+          <span className="relative text-left leading-none">
+            <span className="block text-[11px] font-semibold text-white/75 uppercase tracking-[0.18em]">
+              TAI
+            </span>
+            <span className="block text-xs font-black mt-1">Coach</span>
+          </span>
+        </span>
       </button>
 
       <AnimatePresence>
@@ -85,7 +103,7 @@ export default function CoachTaiWidget({
                     <Sparkles size={18} />
                     <div>
                       <p className="text-sm font-black">Coach TAI</p>
-                      <p className="text-[11px] text-white/85">Base pronta para futura IA real</p>
+                      <p className="text-[11px] text-white/85">Seu assistente rápido de treino</p>
                     </div>
                   </div>
                   <button
@@ -96,7 +114,7 @@ export default function CoachTaiWidget({
                   </button>
                 </div>
 
-                <div className="p-4 space-y-4">
+                <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
                   <div className="rounded-2xl bg-[#F8FBFF] border border-[#DBEAFE] p-3">
                     <p className="text-xs font-bold text-[#1D4ED8] uppercase tracking-wide mb-1">
                       Contexto de hoje
@@ -109,6 +127,18 @@ export default function CoachTaiWidget({
                     </p>
                   </div>
 
+                  {!reply && (
+                    <div className="rounded-2xl bg-gradient-to-br from-[#EFF6FF] to-white border border-[#DBEAFE] p-3">
+                      <p className="text-sm font-black text-[#0F172A]">
+                        {profileName ? `${profileName},` : "Hoje,"} vamos treinar melhor?
+                      </p>
+                      <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
+                        Toque numa pergunta pronta ou escreva algo curto para eu te ajudar com motivação,
+                        aquecimento ou adaptação do treino.
+                      </p>
+                    </div>
+                  )}
+
                   <div>
                     <p className="text-xs font-bold text-[#64748B] uppercase tracking-wide mb-2">
                       Perguntas rápidas
@@ -118,7 +148,8 @@ export default function CoachTaiWidget({
                         <button
                           key={prompt}
                           onClick={() => handleAsk(prompt)}
-                          className="px-3 py-2 rounded-full bg-[#EFF6FF] text-[#1D4ED8] text-xs font-bold border border-[#DBEAFE]"
+                          disabled={loading}
+                          className="px-3 py-2 rounded-full bg-[#EFF6FF] text-[#1D4ED8] text-xs font-bold border border-[#DBEAFE] disabled:opacity-60"
                         >
                           {prompt}
                         </button>

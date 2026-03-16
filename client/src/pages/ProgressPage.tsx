@@ -90,19 +90,19 @@ export default function ProgressPage() {
       : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5E6F0] to-[#E8D5E8] text-[#2D1B3D] pb-10">
+    <div className="min-h-screen bg-gradient-to-br from-[#EEF5FF] to-[#DCEBFF] text-[#0F172A] pb-10">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-[#E8D5E8] px-4 py-4 shadow-sm">
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-[#DBEAFE] px-4 py-4 shadow-sm">
         <div className="max-w-lg mx-auto flex items-center gap-3">
           <button
             onClick={() => setLocation("/")}
-            className="flex items-center gap-2 text-[#E85B9C] hover:text-[#D946A6] transition-colors"
+            className="flex items-center gap-2 text-[#2563EB] hover:text-[#1D4ED8] transition-colors"
           >
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="font-black text-lg text-[#2D1B3D]">Progressão</h1>
-            <p className="text-xs text-[#7D5B8D]">Seu histórico de treinos</p>
+            <h1 className="font-black text-lg text-[#0F172A]">Progressão</h1>
+            <p className="text-xs text-[#64748B]">Seu histórico de treinos</p>
           </div>
         </div>
       </div>
@@ -115,12 +115,12 @@ export default function ProgressPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <StatCard icon={<Calendar size={14} />} label="Treinos" value={totalWorkouts.toString()} color="#E85B9C" />
+          <StatCard icon={<Calendar size={14} />} label="Treinos" value={totalWorkouts.toString()} color="#2563EB" />
           <StatCard
             icon={<Zap size={14} />}
             label="Volume Total"
             value={totalVolume > 1000 ? `${(totalVolume / 1000).toFixed(1)}k` : `${totalVolume}kg`}
-            color="#D946A6"
+            color="#1D4ED8"
           />
         </motion.div>
 
@@ -131,7 +131,7 @@ export default function ProgressPage() {
           transition={{ delay: 0.3 }}
           className="mb-4"
         >
-          <h2 className="text-xs font-bold tracking-widest text-[#7D5B8D] uppercase mb-3">
+          <h2 className="text-xs font-bold tracking-widest text-[#64748B] uppercase mb-3">
             Selecionar Exercício
           </h2>
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
@@ -143,8 +143,8 @@ export default function ProgressPage() {
                   onClick={() => setSelectedExerciseId(ex.id)}
                   className={`flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                     isSelected
-                      ? "bg-[#E85B9C] text-white"
-                      : "bg-white/50 text-[#7D5B8D] hover:bg-white"
+                      ? "bg-[#2563EB] text-white"
+                      : "bg-white/50 text-[#64748B] hover:bg-white"
                   }`}
                 >
                   {ex.name}
@@ -160,27 +160,27 @@ export default function ProgressPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white/80 rounded-2xl p-4 mb-4 shadow-md border-2 border-[#E8D5E8]"
+            className="bg-white/80 rounded-2xl p-4 mb-4 shadow-md border-2 border-[#DBEAFE]"
           >
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="font-bold text-[#2D1B3D] text-sm">{selectedExercise.name}</h3>
-                <p className="text-xs text-[#7D5B8D]">{selectedExercise.muscleGroup}</p>
+                <h3 className="font-bold text-[#0F172A] text-sm">{selectedExercise.name}</h3>
+                <p className="text-xs text-[#64748B]">{selectedExercise.muscleGroup}</p>
               </div>
               <div className="flex gap-2">
                 {currentPR > 0 && (
                   <div className="text-right">
-                    <p className="text-[10px] text-[#7D5B8D] uppercase tracking-wider">PR</p>
-                    <p className="font-black text-base text-[#E85B9C]">
+                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">PR</p>
+                    <p className="font-black text-base text-[#2563EB]">
                       {currentPR}kg
                     </p>
                   </div>
                 )}
                 {improvement !== null && (
                   <div className="text-right ml-3">
-                    <p className="text-[10px] text-[#7D5B8D] uppercase tracking-wider">Última</p>
+                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">Última</p>
                     <p
-                      className={`font-black text-base ${improvement >= 0 ? "text-[#E85B9C]" : "text-red-400"}`}
+                      className={`font-black text-base ${improvement >= 0 ? "text-[#2563EB]" : "text-red-400"}`}
                     >
                       {improvement >= 0 ? "+" : ""}
                       {improvement.toFixed(1)}%
@@ -198,8 +198,8 @@ export default function ProgressPage() {
                   onClick={() => setChartMetric(m)}
                   className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     chartMetric === m
-                      ? "bg-[#E85B9C] text-white"
-                      : "bg-white/50 text-[#7D5B8D] hover:bg-white"
+                      ? "bg-[#2563EB] text-white"
+                      : "bg-white/50 text-[#64748B] hover:bg-white"
                   }`}
                 >
                   {m === "maxWeight" ? "Carga Máx." : "Volume Total"}
@@ -210,16 +210,16 @@ export default function ProgressPage() {
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={180}>
                 <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E8D5E8" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#DBEAFE" />
                   <XAxis
                     dataKey="date"
-                    tick={{ fill: "#7D5B8D", fontSize: 10 }}
+                    tick={{ fill: "#64748B", fontSize: 10 }}
                     axisLine={false}
                     tickLine={false}
                     interval="preserveStartEnd"
                   />
                   <YAxis
-                    tick={{ fill: "#7D5B8D", fontSize: 10 }}
+                    tick={{ fill: "#64748B", fontSize: 10 }}
                     axisLine={false}
                     tickLine={false}
                     width={35}
@@ -227,9 +227,9 @@ export default function ProgressPage() {
                   <Tooltip
                     contentStyle={{
                       background: "#fff",
-                      border: "2px solid #E8D5E8",
+                      border: "2px solid #DBEAFE",
                       borderRadius: 12,
-                      color: "#2D1B3D",
+                      color: "#0F172A",
                       fontSize: 12,
                     }}
                     formatter={(value: number) => [
@@ -239,15 +239,15 @@ export default function ProgressPage() {
                   <Line
                     type="monotone"
                     dataKey={chartMetric}
-                    stroke="#E85B9C"
+                    stroke="#2563EB"
                     strokeWidth={2.5}
-                    dot={{ fill: "#E85B9C", r: 4, strokeWidth: 0 }}
-                    activeDot={{ r: 6, fill: "#E85B9C" }}
+                    dot={{ fill: "#2563EB", r: 4, strokeWidth: 0 }}
+                    activeDot={{ r: 6, fill: "#2563EB" }}
                   />
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-40 flex flex-col items-center justify-center text-[#7D5B8D]">
+              <div className="h-40 flex flex-col items-center justify-center text-[#64748B]">
                 <BarChart3 size={32} className="mb-2 opacity-30" />
                 <p className="text-sm">Nenhum dado ainda</p>
                 <p className="text-xs mt-1">Complete um treino para ver sua progressão</p>
@@ -262,19 +262,19 @@ export default function ProgressPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <h2 className="text-xs font-bold tracking-widest text-[#7D5B8D] uppercase mb-3">
+          <h2 className="text-xs font-bold tracking-widest text-[#64748B] uppercase mb-3">
             Histórico — {selectedExercise?.name}
           </h2>
 
           {exerciseLogs.length === 0 ? (
-            <div className="bg-white/80 rounded-2xl p-6 text-center text-[#7D5B8D] shadow-md border-2 border-[#E8D5E8]">
+            <div className="bg-white/80 rounded-2xl p-6 text-center text-[#64748B] shadow-md border-2 border-[#DBEAFE]">
               <Dumbbell size={28} className="mx-auto mb-2 opacity-30" />
               <p className="text-sm">Sem histórico para este exercício</p>
             </div>
           ) : (
             <div className="space-y-2">
               {[...exerciseLogs].reverse().map((log, idx) => (
-                <LogEntry key={`${log.date}-${idx}`} log={log} color="#E85B9C" />
+                <LogEntry key={`${log.date}-${idx}`} log={log} color="#2563EB" />
               ))}
             </div>
           )}
@@ -296,12 +296,12 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="bg-white/80 rounded-2xl p-3 text-center shadow-md border-2 border-[#E8D5E8]">
+    <div className="bg-white/80 rounded-2xl p-3 text-center shadow-md border-2 border-[#DBEAFE]">
       <div className="flex items-center justify-center gap-1 mb-1" style={{ color }}>
         {icon}
         <span className="text-[9px] font-bold uppercase tracking-wider">{label}</span>
       </div>
-      <p className="font-black text-[#2D1B3D] text-lg leading-none">{value}</p>
+      <p className="font-black text-[#0F172A] text-lg leading-none">{value}</p>
     </div>
   );
 }
@@ -309,14 +309,14 @@ function StatCard({
 function LogEntry({ log, color }: { log: ProgressEntry; color: string }) {
   const completedSets = log.sets.filter((s) => s.completed);
   return (
-    <div className="bg-white/80 rounded-xl px-4 py-3 flex items-center gap-3 shadow-md border-2 border-[#E8D5E8]">
+    <div className="bg-white/80 rounded-xl px-4 py-3 flex items-center gap-3 shadow-md border-2 border-[#DBEAFE]">
       <div
         className="w-2 h-2 rounded-full flex-shrink-0"
         style={{ background: color }}
       />
       <div className="flex-1 min-w-0">
-        <p className="text-[#2D1B3D] text-sm font-bold">{formatDate(log.date)}</p>
-        <p className="text-[#7D5B8D] text-xs mt-0.5">
+        <p className="text-[#0F172A] text-sm font-bold">{formatDate(log.date)}</p>
+        <p className="text-[#64748B] text-xs mt-0.5">
           {completedSets.length} séries · Máx: {log.maxWeight}kg · Vol: {log.totalVolume}kg
         </p>
         <div className="flex gap-1 mt-1.5 flex-wrap">
@@ -330,7 +330,7 @@ function LogEntry({ log, color }: { log: ProgressEntry; color: string }) {
             </span>
           ))}
           {completedSets.length > 4 && (
-            <span className="text-[10px] text-[#7D5B8D]">+{completedSets.length - 4}</span>
+            <span className="text-[10px] text-[#64748B]">+{completedSets.length - 4}</span>
           )}
         </div>
       </div>

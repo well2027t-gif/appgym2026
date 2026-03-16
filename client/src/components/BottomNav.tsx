@@ -12,7 +12,7 @@ export default function BottomNav() {
 
   const items: NavItem[] = [
     { label: "Home", href: "/", icon: <Home size={20} /> },
-    { label: "Treinos", href: "/builder", icon: <Dumbbell size={20} /> },
+    { label: "Treinos", href: "/treino", icon: <Dumbbell size={20} /> },
     { label: "Progresso", href: "/progress", icon: <BarChart3 size={20} /> },
     { label: "Perfil", href: "/profile", icon: <User size={20} /> },
   ];
@@ -24,7 +24,7 @@ export default function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="mx-auto max-w-lg px-4 pb-4 pt-2.5">
+      <div className="mx-auto max-w-[420px] px-4 pb-4 pt-2.5">
         <div className="rounded-3xl bg-white/90 backdrop-blur-md border border-[#DBEAFE] shadow-2xl px-3 py-2">
           <div className="grid grid-cols-4 gap-1">
             {items.map((it) => {

@@ -9,17 +9,17 @@ export default function Footer() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.5 }}
-      className="mt-12 py-6 text-center border-t border-[#E85B9C]/20"
+      className="mt-12 py-6 text-center border-t border-[#2563EB]/20"
     >
-      <p className="text-xs text-[#7D5B8D] mb-2">
+      <p className="text-xs text-[#64748B] mb-2">
         Desenvolvido por{" "}
         <motion.a
           href={instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          whileHover={{ scale: 1.05, color: "#2D1B3D" }}
+          whileHover={{ scale: 1.05, color: "#0F172A" }}
           whileTap={{ scale: 0.95 }}
-          className="font-bold text-black hover:text-[#2D1B3D] transition-colors inline-flex items-center gap-1 cursor-pointer"
+          className="font-bold text-black hover:text-[#0F172A] transition-colors inline-flex items-center gap-1 cursor-pointer"
         >
           Wellington R
           <Instagram size={14} />

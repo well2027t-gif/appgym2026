@@ -14,22 +14,22 @@ import {
   isWorkoutCompleted,
 } from "@/lib/workoutData";
 import BottomNav from "@/components/BottomNav";
-import CoachTaiWidget from "@/components/CoachTaiWidget";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417482339/8T8LQictkiAYW4kTBqUo49/tai-strong-logo_138df1fb.png";
 const PAGE_BG =
   "https://images.unsplash.com/photo-1526402461234-4f3a3e11b3c9?auto=format&fit=crop&w=1400&q=60";
 const HERO_BG =
-  "https://images.unsplash.com/photo-1518458028785-8fbcd101ebb9?auto=format&fit=crop&w=1400&q=60";
+  "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=60";
 const EVO_WEIGHT_IMG =
   "https://images.unsplash.com/photo-1599058918144-1ffabb6ab9a0?auto=format&fit=crop&w=600&q=60";
-const EVO_LAST_PHOTO_IMG =
-  "https://images.unsplash.com/photo-1526401485004-2aa7b6f2b59b?auto=format&fit=crop&w=600&q=60";
+const EVO_LAST_PHOTO_IMG = "/welington-last-photo.png";
+const DEFAULT_PROFILE_PHOTO = "/welington-profile.png";
 
 type UserProfile = {
   name?: string;
   weight?: number;
   goal?: string;
+  photoDataUrl?: string;
+  progressPhotos?: string[];
 };
 
 const PROFILE_STORAGE_KEY = "gymtracker_profile_v1";
@@ -61,6 +61,12 @@ export default function Home() {
     return orderedDays[begin];
   }, [orderedDays, todayDOW]);
 
+  const headlineWorkoutName = useMemo(() => {
+    // Ajuste temporário solicitado: segunda-feira como Peito + Tríceps.
+    if (nextWorkoutDay.dayOfWeek === 1) return "Peito + Tríceps";
+    return nextWorkoutDay.name;
+  }, [nextWorkoutDay.dayOfWeek, nextWorkoutDay.name]);
+
   const completed = isWorkoutCompleted(nextWorkoutDay.id, todayISO);
   const completedWorkouts = getCompletedWorkouts();
   const logs = getProgressLogs();
@@ -74,6 +80,11 @@ export default function Home() {
       profile = null;
     }
   }
+
+  const latestProgressPhoto =
+    profile?.progressPhotos && profile.progressPhotos.length > 0
+      ? profile.progressPhotos[0]
+      : EVO_LAST_PHOTO_IMG;
 
   const stats = useMemo(() => {
     const workoutDaysInWeek = orderedDays.filter((d) => !d.isRestDay).length;
@@ -100,45 +111,59 @@ export default function Home() {
     return { workoutDaysInWeek, totalMinutes, streak };
   }, [orderedDays, logs, completedWorkouts, todayISO]);
 
+  const weekDateByDow = useMemo(() => {
+    const today = new Date();
+    const map: Record<number, number> = {};
+
+    [1, 2, 3, 4, 5, 6, 0].forEach((dow) => {
+      const date = new Date(today);
+      const diff = dow - todayDOW;
+      date.setDate(today.getDate() + diff);
+      map[dow] = date.getDate();
+    });
+
+    return map;
+  }, [todayDOW]);
+
   return (
     <div
-      className="min-h-screen text-[#0F172A] pb-20"
+      className="min-h-screen text-[#0F172A] pb-16"
       style={{
         backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.92), rgba(226,239,255,0.96)), url(${PAGE_BG})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="px-4 max-w-[420px] mx-auto pt-4">
+      <div className="px-4 max-w-[420px] mx-auto pt-3">
         {/* Top brand / greeting card */}
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative mb-3"
+          className="relative mb-2.5"
         >
           <div className="absolute inset-x-6 -top-2 h-6 rounded-full bg-gradient-to-r from-[#DBEAFE] to-transparent blur-xl opacity-70" />
-          <div className="relative flex items-center gap-3 rounded-2xl bg-white/95 border border-[#DBEAFE] shadow px-3 py-2.5">
+          <div className="relative flex items-center gap-3.5 rounded-2xl bg-white/95 border border-[#DBEAFE] shadow px-3 py-2.5">
             <div className="shrink-0">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#2563EB] to-[#1D4ED8] flex items-center justify-center shadow-md">
+              <div className="w-14 h-14 rounded-full bg-white border border-[#DBEAFE] flex items-center justify-center shadow-md">
                 <img
-                  src={LOGO_URL}
-                  alt="TAI STRONG"
-                  className="w-8 h-8 rounded-full border border-white/70 bg-white object-contain"
+                  src={profile?.photoDataUrl || DEFAULT_PROFILE_PHOTO}
+                  alt="Foto do perfil"
+                  className="w-12 h-12 rounded-full object-cover"
                 />
               </div>
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 pl-0.5">
               <p className="text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.18em]">
                 Seu coach diário
               </p>
               <p className="text-[13px] font-black text-[#0F172A] truncate">
-                Bom dia, {profile?.name && profile.name.trim().length > 0 ? profile.name : "Ana"} 💪
+                Bom dia, {profile?.name && profile.name.trim().length > 0 ? profile.name : "Welington"} 💪
               </p>
-              <p className="text-[11px] text-[#1E3A8A] mt-0.5 leading-tight">
+              <p className="text-[10px] text-[#1E3A8A] mt-1 leading-tight">
                 <Flame size={12} className="inline-block mr-1 text-[#2563EB]" />
                 Treino de hoje:{" "}
                 <span className="font-bold text-[#1D4ED8] underline decoration-[#1D4ED8]/40">
-                  {nextWorkoutDay.name}
+                  {headlineWorkoutName}
                 </span>
               </p>
             </div>
@@ -158,18 +183,18 @@ export default function Home() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="mt-3 rounded-3xl overflow-hidden shadow-2xl border border-white/30"
+          className="mt-2.5 rounded-3xl overflow-hidden shadow-2xl border border-white/30"
         >
           <div
-            className="relative h-[104px]"
+            className="relative h-[88px]"
             style={{
               backgroundImage: `linear-gradient(135deg, rgba(15,23,42,0.70), rgba(37,99,235,0.40)), url(${HERO_BG})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
           >
-            <div className="absolute inset-0 p-4 flex items-end">
-              <p className="text-white text-lg font-black leading-snug drop-shadow">
+            <div className="absolute inset-0 p-3.5 flex items-end">
+              <p className="text-white text-base font-black leading-snug drop-shadow">
                 Disciplina
                 <br />
                 constrói resultados.
@@ -178,12 +203,12 @@ export default function Home() {
           </div>
 
           <div
-            className="px-4 py-3 text-white"
+            className="px-3.5 py-2.5 text-white"
             style={{
               background: "linear-gradient(135deg, rgba(15,23,42,0.96), rgba(30,64,175,0.92))",
             }}
           >
-            <div className="flex items-center justify-between text-[11px] font-bold">
+            <div className="flex items-center justify-between text-[10px] font-bold">
               <div className="flex items-center gap-2">
                 <Flame size={14} className="text-[#FCD34D]" />
                 <span>
@@ -197,7 +222,7 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div className="mt-2 flex items-center justify-center gap-2 text-[11px] font-bold text-white/90">
+            <div className="mt-1.5 flex items-center justify-center gap-2 text-[10px] font-bold text-white/90">
               <Trophy size={14} className="text-[#93C5FD]" />
               <span>
                 Sequência: <span className="font-black">{stats.streak}</span> Dias
@@ -214,7 +239,7 @@ export default function Home() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => setLocation(`/workout/${nextWorkoutDay.id}`)}
-          className="mt-3 w-full py-3.5 rounded-full text-white font-black tracking-wide text-[15px] transition-all"
+          className="mt-2.5 w-full py-3 rounded-full text-white font-black tracking-wide text-[14px] transition-all"
           style={{
             background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
             boxShadow: "0 16px 26px rgba(37, 99, 235, 0.45)",
@@ -228,9 +253,16 @@ export default function Home() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.18 }}
-          className="mt-3 bg-white/80 backdrop-blur-md rounded-3xl px-4 pt-2.5 pb-3.5 border border-white/60 shadow-lg"
+          className="mt-2.5 bg-white/90 backdrop-blur-md rounded-3xl px-3.5 pt-2.5 pb-3 border border-[#DBEAFE] shadow-[0_12px_26px_rgba(37,99,235,0.12)] overflow-hidden relative"
         >
-          <div className="grid grid-cols-7 gap-2">
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#93C5FD] via-[#2563EB] to-[#1D4ED8]" />
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1D4ED8]">Semana</p>
+            <span className="rounded-full bg-[#EFF6FF] border border-[#DBEAFE] px-2 py-0.5 text-[9px] font-bold text-[#1E3A8A]">
+              toque no dia
+            </span>
+          </div>
+          <div className="grid grid-cols-7 gap-1.5">
             {[1, 2, 3, 4, 5, 6, 0].map((dow) => {
               const day = orderedDays.find((d) => d.dayOfWeek === dow);
               if (!day) return <div key={dow} />;
@@ -240,28 +272,17 @@ export default function Home() {
                 <button
                   key={dow}
                   onClick={() => setLocation(`/workout/${day.id}`)}
-                  className="flex flex-col items-center gap-1"
+                  className={`flex min-h-[50px] flex-col items-center justify-center rounded-2xl border px-1 py-1.5 transition-all ${
+                    active
+                      ? "border-[#93C5FD] bg-[#EFF6FF]"
+                      : "border-[#DBEAFE] bg-white/70 hover:bg-white"
+                  }`}
                 >
-                  <span className="text-[11px] font-black text-[#1E3A8A]">{getShortDowLabel(dow)}</span>
-                  <span className="w-8 h-8 rounded-full flex items-center justify-center">
-                    {done ? (
-                      <span className="w-7 h-7 rounded-full bg-[#16A34A] flex items-center justify-center shadow-sm">
-                        <Check size={16} className="text-white" />
-                      </span>
-                    ) : (
-                      <span
-                        className={`w-7 h-7 rounded-full border-2 flex items-center justify-center ${
-                          active ? "border-[#2563EB]" : "border-[#BFDBFE]"
-                        }`}
-                        style={
-                          active
-                            ? { background: "linear-gradient(135deg, rgba(37,99,235,0.18), rgba(59,130,246,0.12))" }
-                            : { background: "rgba(255,255,255,0.7)" }
-                        }
-                      >
-                        <span className="text-[#BFDBFE] text-sm leading-none">○</span>
-                      </span>
-                    )}
+                  <span className={`text-[9px] font-black ${active ? "text-[#1D4ED8]" : "text-[#1E3A8A]"}`}>
+                    {getShortDowLabel(dow)}
+                  </span>
+                  <span className={`text-[12px] font-black leading-none ${active ? "text-[#0F172A]" : "text-[#334155]"}`}>
+                    {weekDateByDow[dow]}
                   </span>
                 </button>
               );
@@ -274,75 +295,54 @@ export default function Home() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.24 }}
-          className="mt-4"
+          className="mt-3"
         >
-          <div className="mb-2">
-            <p className="text-base font-black text-[#0F172A]">Sua Evolução</p>
-            <p className="text-[11px] text-[#64748B]">Acompanhe seus indicadores principais</p>
+          <div className="mb-2 flex items-end justify-between">
+            <div>
+              <p className="text-[15px] font-black text-[#0F172A]">Sua Evolução</p>
+              <p className="text-[10px] text-[#64748B]">Indicadores principais</p>
+            </div>
+            <span className="rounded-full border border-[#DBEAFE] bg-white/80 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-[#1D4ED8]">
+              premium
+            </span>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-3xl border border-[#DBEAFE] bg-white/95 p-3 shadow-[0_14px_30px_rgba(37,99,235,0.10)]">
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wide text-[#1D4ED8]">
-                  Peso Atual
-                </span>
-                <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-[#EFF6FF]">
-                  <Scale size={15} className="text-[#1D4ED8]" />
-                </span>
+          <div className="grid grid-cols-3 gap-2.5">
+            <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-3 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[132px]">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">Peso Atual</span>
+                <Scale size={14} className="text-[#1D4ED8]" />
               </div>
-              <div className="flex items-end justify-between gap-2">
-                <div>
-                  <p className="text-3xl font-black leading-none text-[#0F172A]">
-                    {profile?.weight && profile.weight > 0 ? profile.weight : 64}
-                  </p>
-                  <p className="mt-0.5 text-[11px] font-bold text-[#1E3A8A]">kg</p>
-                  <p className="mt-2 text-[11px] font-bold text-emerald-600">+ 2 kg este mes</p>
-                </div>
-                <div
-                  className="h-14 w-14 rounded-2xl border border-[#DBEAFE] shadow-inner"
-                  style={{
-                    backgroundImage: `url(${EVO_WEIGHT_IMG})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                />
+              <p className="text-[36px] leading-none font-black text-[#0F172A]">
+                {profile?.weight && profile.weight > 0 ? profile.weight : 94}
+              </p>
+              <p className="text-[11px] font-bold text-[#1E3A8A]">kg</p>
+              <div className="mt-2 inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-600">
+                +2 kg no mês
               </div>
             </div>
 
-            <div className="rounded-3xl border border-[#DBEAFE] bg-white/95 p-3 shadow-[0_14px_30px_rgba(37,99,235,0.10)]">
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wide text-[#1D4ED8]">
-                  Treinos
-                </span>
-                <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-[#EFF6FF]">
-                  <Dumbbell size={15} className="text-[#1D4ED8]" />
-                </span>
+            <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-3 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[132px]">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">Treinos</span>
+                <Dumbbell size={14} className="text-[#1D4ED8]" />
               </div>
-              <div className="text-center">
-                <p className="text-3xl font-black leading-none text-[#0F172A]">
-                  {new Set(logs.map((l) => l.date)).size}
-                </p>
-                <p className="mt-1 text-[12px] font-bold text-[#1E3A8A]">Concluidos</p>
-                <div className="mt-3 rounded-2xl bg-[#F8FBFF] px-2 py-2 text-[10px] font-bold text-[#64748B]">
-                  Consistencia semanal
-                </div>
-              </div>
+              <p className="text-[36px] leading-none font-black text-[#0F172A] text-center mt-1">
+                {new Set(logs.map((l) => l.date)).size}
+              </p>
+              <p className="text-[11px] font-bold text-[#1E3A8A] text-center mt-1">Concluídos</p>
+              <div className="mt-2 text-[10px] text-[#64748B] font-semibold text-center">consistência</div>
             </div>
 
-            <div className="rounded-3xl border border-[#DBEAFE] bg-white/95 p-3 shadow-[0_14px_30px_rgba(37,99,235,0.10)]">
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wide text-[#1D4ED8]">
-                  Ultima Foto
-                </span>
-                <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-[#EFF6FF]">
-                  <ImageIcon size={15} className="text-[#1D4ED8]" />
-                </span>
+            <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-3 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[132px]">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">Última Foto</span>
+                <ImageIcon size={14} className="text-[#1D4ED8]" />
               </div>
               <div
-                className="h-[106px] w-full rounded-2xl border border-[#DBEAFE] bg-[#F8FBFF]"
+                className="h-[82px] w-full rounded-[16px] border border-[#DBEAFE] overflow-hidden"
                 style={{
-                  backgroundImage: `url(${EVO_LAST_PHOTO_IMG})`,
+                  backgroundImage: `url(${latestProgressPhoto})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
@@ -353,12 +353,6 @@ export default function Home() {
 
       </div>
 
-      <CoachTaiWidget
-        profileName={profile?.name}
-        workoutName={nextWorkoutDay.name}
-        completedToday={completed}
-        weeklyWorkoutCount={stats.workoutDaysInWeek}
-      />
       <BottomNav />
     </div>
   );

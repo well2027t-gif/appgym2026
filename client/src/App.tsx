@@ -12,8 +12,8 @@ import Home from "./pages/Home";
 import WorkoutPage from "./pages/WorkoutPage";
 import ProgressPage from "./pages/ProgressPage";
 import DashboardPage from "./pages/DashboardPage";
-import ProgramBuilderPage from "./pages/ProgramBuilderPage";
 import ProfilePage from "./pages/ProfilePage";
+import TreinoPage from "./pages/TreinoPage";
 import { initializeWeeklyReset } from "@/lib/workoutData";
 
 function Router() {
@@ -21,7 +21,8 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/workout/:dayId"} component={WorkoutPage} />
-      <Route path={"/builder"} component={ProgramBuilderPage} />
+      <Route path={"/treino"} component={TreinoPage} />
+      <Route path={"/builder"} component={TreinoPage} />
       <Route path={"/progress"} component={ProgressPage} />
       <Route path={"/dashboard"} component={DashboardPage} />
       <Route path={"/profile"} component={ProfilePage} />
