@@ -18,9 +18,16 @@ export default function ConversationPage() {
   );
   const [isAutoTyping, setIsAutoTyping] = useState(false);
   const [showProfessionalProfile, setShowProfessionalProfile] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState(() =>
-    typeof window !== "undefined" ? window.visualViewport?.height ?? window.innerHeight : 0,
-  );
+  const [viewport, setViewport] = useState(() => {
+    if (typeof window === "undefined") return { height: 0, width: 0, offsetTop: 0, offsetLeft: 0 };
+    const vv = window.visualViewport;
+    return {
+      height: vv?.height ?? window.innerHeight,
+      width: vv?.width ?? window.innerWidth,
+      offsetTop: vv?.offsetTop ?? 0,
+      offsetLeft: vv?.offsetLeft ?? 0,
+    };
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const senderId = user?.uid ?? getGuestId();
@@ -37,7 +44,13 @@ export default function ConversationPage() {
   useEffect(() => {
     if (typeof window === "undefined" || !window.visualViewport) return;
     const vv = window.visualViewport;
-    const update = () => setViewportHeight(vv.height);
+    const update = () =>
+      setViewport({
+        height: vv.height,
+        width: vv.width,
+        offsetTop: vv.offsetTop,
+        offsetLeft: vv.offsetLeft,
+      });
     vv.addEventListener("resize", update);
     vv.addEventListener("scroll", update);
     update();
@@ -133,9 +146,12 @@ export default function ConversationPage() {
 
   return (
     <div
-      className="fixed inset-x-0 top-0 overflow-hidden bg-linear-to-b from-[#F5F9FF] to-[#EAF2FF] flex flex-col z-30"
+      className="fixed overflow-hidden bg-linear-to-b from-[#F5F9FF] to-[#EAF2FF] flex flex-col z-30"
       style={{
-        height: viewportHeight ? `${viewportHeight}px` : "100dvh",
+        top: viewport.offsetTop,
+        left: viewport.offsetLeft,
+        width: viewport.width ? `${viewport.width}px` : "100%",
+        height: viewport.height ? `${viewport.height}px` : "100dvh",
         maxHeight: "100dvh",
       }}
     >
