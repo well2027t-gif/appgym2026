@@ -244,7 +244,12 @@ export default function ConversationPage() {
       </div>
 
       <div className="border-t border-[#E6EEFF] shrink-0 bg-white/95">
-        <div className="px-3 pt-2 pb-[calc(0.65rem+env(safe-area-inset-bottom))]">
+        <div
+          className="px-3 pt-2"
+          style={{
+            paddingBottom: "calc(0.65rem + env(safe-area-inset-bottom) + 52px)",
+          }}
+        >
           <div className="flex items-center gap-2">
           <input
             value={text}
@@ -253,6 +258,7 @@ export default function ConversationPage() {
             placeholder="Digite sua mensagem..."
             className="flex-1 min-w-0 h-11 rounded-xl border border-[#DBEAFE] px-3 text-sm outline-none focus:border-[#2563EB]"
             style={{ fontSize: "16px" }}
+            autoComplete="off"
           />
           <button
             onClick={handleSend}
