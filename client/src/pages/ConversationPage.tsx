@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Circle, SendHorizonal } from "lucide-react";
 import { useLocation, useRoute } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,7 +21,18 @@ export default function ConversationPage() {
   const [viewportHeight, setViewportHeight] = useState(() =>
     typeof window !== "undefined" ? window.visualViewport?.height ?? window.innerHeight : 0,
   );
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const senderId = user?.uid ?? getGuestId();
+
+  function scrollToBottom() {
+    requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+      }
+    });
+  }
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.visualViewport) return;
@@ -71,6 +82,15 @@ export default function ConversationPage() {
     }
   }, [conversationId, user]);
 
+  const prevCountRef = useRef(0);
+  useEffect(() => {
+    const total = groupedByDate.reduce((acc, g) => acc + g.items.length, 0);
+    if (total !== prevCountRef.current || isAutoTyping) {
+      prevCountRef.current = total;
+      scrollToBottom();
+    }
+  }, [groupedByDate, isAutoTyping]);
+
   async function handleSend() {
     const message = text.trim();
     if (!message) return;
@@ -81,6 +101,7 @@ export default function ConversationPage() {
       text: message,
     });
     scheduleAutoReply(message);
+    scrollToBottom();
   }
 
   const autoStarter = useMemo(
@@ -159,7 +180,7 @@ export default function ConversationPage() {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto px-3 py-3">
+      <div ref={scrollContainerRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-3 py-3 overscroll-contain">
         <div className="space-y-4 min-h-full">
         {loading ? (
           <div className="text-sm text-[#64748B]">Carregando mensagens...</div>
@@ -218,6 +239,7 @@ export default function ConversationPage() {
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} className="h-2 shrink-0" aria-hidden />
         </div>
       </div>
 
@@ -227,6 +249,7 @@ export default function ConversationPage() {
           <input
             value={text}
             onChange={e => setText(e.target.value)}
+            onFocus={scrollToBottom}
             placeholder="Digite sua mensagem..."
             className="flex-1 min-w-0 h-11 rounded-xl border border-[#DBEAFE] px-3 text-sm outline-none focus:border-[#2563EB]"
             style={{ fontSize: "16px" }}
