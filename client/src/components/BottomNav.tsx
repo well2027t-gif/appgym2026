@@ -1,5 +1,6 @@
 import { BarChart3, Dumbbell, Home, User } from "lucide-react";
 import { useLocation } from "wouter";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type NavItem = {
   label: string;
@@ -9,6 +10,7 @@ type NavItem = {
 
 export default function BottomNav() {
   const [location, setLocation] = useLocation();
+  const { colorTheme } = useTheme();
 
   const items: NavItem[] = [
     { label: "Home", href: "/", icon: <Home size={20} /> },
@@ -38,7 +40,12 @@ export default function BottomNav() {
                   }`}
                   style={
                     active
-                      ? { background: "linear-gradient(135deg, rgba(37,99,235,0.16), rgba(59,130,246,0.10))" }
+                      ? {
+                          background:
+                            colorTheme === "pink"
+                              ? "linear-gradient(135deg, rgba(236,72,153,0.18), rgba(244,114,182,0.10))"
+                              : "linear-gradient(135deg, rgba(37,99,235,0.16), rgba(59,130,246,0.10))",
+                        }
                       : undefined
                   }
                 >

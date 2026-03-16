@@ -3,7 +3,15 @@
 // Layout: Exercise selector + line chart + history log
 
 import { motion } from "framer-motion";
-import { ArrowLeft, BarChart3, Calendar, Dumbbell, TrendingUp, Trophy, Zap } from "lucide-react";
+import {
+  ArrowLeft,
+  BarChart3,
+  Calendar,
+  Dumbbell,
+  TrendingUp,
+  Trophy,
+  Zap,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import {
@@ -23,31 +31,36 @@ import {
   type ProgressEntry,
 } from "@/lib/workoutData";
 
-const PROGRESS_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417068037/RxHqAgESmY5TyESbD3A4jy/gym-progress-visual-b3bEaJ6GjqhVQFj4WsWWUu.webp";
+const PROGRESS_BG =
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663417068037/RxHqAgESmY5TyESbD3A4jy/gym-progress-visual-b3bEaJ6GjqhVQFj4WsWWUu.webp";
 
 // Flatten all exercises from all days
 const allExercises = defaultWorkoutProgram
-  .flatMap((d) => d.exercises)
-  .filter((ex, idx, arr) => arr.findIndex((e) => e.id === ex.id) === idx);
+  .flatMap(d => d.exercises)
+  .filter((ex, idx, arr) => arr.findIndex(e => e.id === ex.id) === idx);
 
 export default function ProgressPage() {
   const [, setLocation] = useLocation();
-  const [selectedExerciseId, setSelectedExerciseId] = useState(allExercises[0]?.id ?? "");
-  const [chartMetric, setChartMetric] = useState<"maxWeight" | "totalVolume">("maxWeight");
+  const [selectedExerciseId, setSelectedExerciseId] = useState(
+    allExercises[0]?.id ?? ""
+  );
+  const [chartMetric, setChartMetric] = useState<"maxWeight" | "totalVolume">(
+    "maxWeight"
+  );
 
   const allLogs = getProgressLogs();
 
   const exerciseLogs = useMemo(
     () =>
       allLogs
-        .filter((l) => l.exerciseId === selectedExerciseId)
+        .filter(l => l.exerciseId === selectedExerciseId)
         .sort((a, b) => a.date.localeCompare(b.date)),
     [allLogs, selectedExerciseId]
   );
 
   const chartData = useMemo(
     () =>
-      exerciseLogs.map((l) => ({
+      exerciseLogs.map(l => ({
         date: formatDate(l.date),
         maxWeight: l.maxWeight,
         totalVolume: l.totalVolume,
@@ -55,25 +68,27 @@ export default function ProgressPage() {
     [exerciseLogs]
   );
 
-  const selectedExercise = allExercises.find((e) => e.id === selectedExerciseId);
-  const mgColor = selectedExercise ? getMuscleGroupColor(selectedExercise.muscleGroup) : "#00FF87";
+  const selectedExercise = allExercises.find(e => e.id === selectedExerciseId);
+  const mgColor = selectedExercise
+    ? getMuscleGroupColor(selectedExercise.muscleGroup)
+    : "#00FF87";
 
   // Overall stats
-  const totalWorkouts = new Set(allLogs.map((l) => l.date)).size;
+  const totalWorkouts = new Set(allLogs.map(l => l.date)).size;
   const totalVolume = allLogs.reduce((a, l) => a + l.totalVolume, 0);
   const bestExercise = (() => {
     const byEx: Record<string, number> = {};
-    allLogs.forEach((l) => {
+    allLogs.forEach(l => {
       byEx[l.exerciseId] = (byEx[l.exerciseId] ?? 0) + 1;
     });
     const topId = Object.entries(byEx).sort((a, b) => b[1] - a[1])[0]?.[0];
-    return allExercises.find((e) => e.id === topId);
+    return allExercises.find(e => e.id === topId);
   })();
 
   // Personal records
   const prByExercise = useMemo(() => {
     const prs: Record<string, number> = {};
-    allLogs.forEach((l) => {
+    allLogs.forEach(l => {
       if (!prs[l.exerciseId] || l.maxWeight > prs[l.exerciseId]) {
         prs[l.exerciseId] = l.maxWeight;
       }
@@ -86,7 +101,8 @@ export default function ProgressPage() {
   const prevLog = exerciseLogs[exerciseLogs.length - 2];
   const improvement =
     lastLog && prevLog
-      ? ((lastLog.maxWeight - prevLog.maxWeight) / (prevLog.maxWeight || 1)) * 100
+      ? ((lastLog.maxWeight - prevLog.maxWeight) / (prevLog.maxWeight || 1)) *
+        100
       : null;
 
   return (
@@ -115,11 +131,20 @@ export default function ProgressPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <StatCard icon={<Calendar size={14} />} label="Treinos" value={totalWorkouts.toString()} color="#2563EB" />
+          <StatCard
+            icon={<Calendar size={14} />}
+            label="Treinos"
+            value={totalWorkouts.toString()}
+            color="#2563EB"
+          />
           <StatCard
             icon={<Zap size={14} />}
             label="Volume Total"
-            value={totalVolume > 1000 ? `${(totalVolume / 1000).toFixed(1)}k` : `${totalVolume}kg`}
+            value={
+              totalVolume > 1000
+                ? `${(totalVolume / 1000).toFixed(1)}k`
+                : `${totalVolume}kg`
+            }
             color="#1D4ED8"
           />
         </motion.div>
@@ -135,7 +160,7 @@ export default function ProgressPage() {
             Selecionar Exercício
           </h2>
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {allExercises.map((ex) => {
+            {allExercises.map(ex => {
               const isSelected = ex.id === selectedExerciseId;
               return (
                 <button
@@ -164,13 +189,19 @@ export default function ProgressPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="font-bold text-[#0F172A] text-sm">{selectedExercise.name}</h3>
-                <p className="text-xs text-[#64748B]">{selectedExercise.muscleGroup}</p>
+                <h3 className="font-bold text-[#0F172A] text-sm">
+                  {selectedExercise.name}
+                </h3>
+                <p className="text-xs text-[#64748B]">
+                  {selectedExercise.muscleGroup}
+                </p>
               </div>
               <div className="flex gap-2">
                 {currentPR > 0 && (
                   <div className="text-right">
-                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">PR</p>
+                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">
+                      PR
+                    </p>
                     <p className="font-black text-base text-[#2563EB]">
                       {currentPR}kg
                     </p>
@@ -178,7 +209,9 @@ export default function ProgressPage() {
                 )}
                 {improvement !== null && (
                   <div className="text-right ml-3">
-                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">Última</p>
+                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">
+                      Última
+                    </p>
                     <p
                       className={`font-black text-base ${improvement >= 0 ? "text-[#2563EB]" : "text-red-400"}`}
                     >
@@ -192,7 +225,7 @@ export default function ProgressPage() {
 
             {/* Metric Toggle */}
             <div className="flex gap-2 mb-4">
-              {(["maxWeight", "totalVolume"] as const).map((m) => (
+              {(["maxWeight", "totalVolume"] as const).map(m => (
                 <button
                   key={m}
                   onClick={() => setChartMetric(m)}
@@ -233,7 +266,7 @@ export default function ProgressPage() {
                       fontSize: 12,
                     }}
                     formatter={(value: number) => [
-                      `${value}${chartMetric === "maxWeight" ? "kg" : "kg vol."}`
+                      `${value}${chartMetric === "maxWeight" ? "kg" : "kg vol."}`,
                     ]}
                   />
                   <Line
@@ -250,7 +283,9 @@ export default function ProgressPage() {
               <div className="h-40 flex flex-col items-center justify-center text-[#64748B]">
                 <BarChart3 size={32} className="mb-2 opacity-30" />
                 <p className="text-sm">Nenhum dado ainda</p>
-                <p className="text-xs mt-1">Complete um treino para ver sua progressão</p>
+                <p className="text-xs mt-1">
+                  Complete um treino para ver sua progressão
+                </p>
               </div>
             )}
           </motion.div>
@@ -274,7 +309,11 @@ export default function ProgressPage() {
           ) : (
             <div className="space-y-2">
               {[...exerciseLogs].reverse().map((log, idx) => (
-                <LogEntry key={`${log.date}-${idx}`} log={log} color="#2563EB" />
+                <LogEntry
+                  key={`${log.date}-${idx}`}
+                  log={log}
+                  color="#2563EB"
+                />
               ))}
             </div>
           )}
@@ -297,9 +336,14 @@ function StatCard({
 }) {
   return (
     <div className="bg-white/80 rounded-2xl p-3 text-center shadow-md border-2 border-[#DBEAFE]">
-      <div className="flex items-center justify-center gap-1 mb-1" style={{ color }}>
+      <div
+        className="flex items-center justify-center gap-1 mb-1"
+        style={{ color }}
+      >
         {icon}
-        <span className="text-[9px] font-bold uppercase tracking-wider">{label}</span>
+        <span className="text-[9px] font-bold uppercase tracking-wider">
+          {label}
+        </span>
       </div>
       <p className="font-black text-[#0F172A] text-lg leading-none">{value}</p>
     </div>
@@ -307,7 +351,7 @@ function StatCard({
 }
 
 function LogEntry({ log, color }: { log: ProgressEntry; color: string }) {
-  const completedSets = log.sets.filter((s) => s.completed);
+  const completedSets = log.sets.filter(s => s.completed);
   return (
     <div className="bg-white/80 rounded-xl px-4 py-3 flex items-center gap-3 shadow-md border-2 border-[#DBEAFE]">
       <div
@@ -315,9 +359,12 @@ function LogEntry({ log, color }: { log: ProgressEntry; color: string }) {
         style={{ background: color }}
       />
       <div className="flex-1 min-w-0">
-        <p className="text-[#0F172A] text-sm font-bold">{formatDate(log.date)}</p>
+        <p className="text-[#0F172A] text-sm font-bold">
+          {formatDate(log.date)}
+        </p>
         <p className="text-[#64748B] text-xs mt-0.5">
-          {completedSets.length} séries · Máx: {log.maxWeight}kg · Vol: {log.totalVolume}kg
+          {completedSets.length} séries · Máx: {log.maxWeight}kg · Vol:{" "}
+          {log.totalVolume}kg
         </p>
         <div className="flex gap-1 mt-1.5 flex-wrap">
           {completedSets.slice(0, 4).map((s, i) => (
@@ -330,7 +377,9 @@ function LogEntry({ log, color }: { log: ProgressEntry; color: string }) {
             </span>
           ))}
           {completedSets.length > 4 && (
-            <span className="text-[10px] text-[#64748B]">+{completedSets.length - 4}</span>
+            <span className="text-[10px] text-[#64748B]">
+              +{completedSets.length - 4}
+            </span>
           )}
         </div>
       </div>

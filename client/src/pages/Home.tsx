@@ -14,6 +14,7 @@ import {
   isWorkoutCompleted,
 } from "@/lib/workoutData";
 import BottomNav from "@/components/BottomNav";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const PAGE_BG =
   "https://images.unsplash.com/photo-1526402461234-4f3a3e11b3c9?auto=format&fit=crop&w=1400&q=60";
@@ -40,6 +41,7 @@ function getShortDowLabel(dow: number) {
 
 export default function Home() {
   const [, setLocation] = useLocation();
+  const { colorTheme } = useTheme();
   const todayDOW = getTodayDayOfWeek();
   const todayISO = getTodayISO();
 
@@ -127,9 +129,12 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-screen text-[#0F172A] pb-16"
+      className="min-h-[100dvh] text-[#0F172A] pb-[calc(6.5rem+env(safe-area-inset-bottom))]"
       style={{
-        backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.92), rgba(226,239,255,0.96)), url(${PAGE_BG})`,
+        backgroundImage:
+          colorTheme === "pink"
+            ? `linear-gradient(180deg, rgba(255,249,252,0.96), rgba(255,228,244,0.96)), url(${PAGE_BG})`
+            : `linear-gradient(180deg, rgba(255,255,255,0.92), rgba(226,239,255,0.96)), url(${PAGE_BG})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -188,7 +193,10 @@ export default function Home() {
           <div
             className="relative h-[88px]"
             style={{
-              backgroundImage: `linear-gradient(135deg, rgba(15,23,42,0.70), rgba(37,99,235,0.40)), url(${HERO_BG})`,
+              backgroundImage:
+                colorTheme === "pink"
+                  ? `linear-gradient(135deg, rgba(15,23,42,0.70), rgba(236,72,153,0.40)), url(${HERO_BG})`
+                  : `linear-gradient(135deg, rgba(15,23,42,0.70), rgba(37,99,235,0.40)), url(${HERO_BG})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
@@ -205,7 +213,10 @@ export default function Home() {
           <div
             className="px-3.5 py-2.5 text-white"
             style={{
-              background: "linear-gradient(135deg, rgba(15,23,42,0.96), rgba(30,64,175,0.92))",
+              background:
+                colorTheme === "pink"
+                  ? "linear-gradient(135deg, rgba(15,23,42,0.96), rgba(157,23,77,0.95))"
+                  : "linear-gradient(135deg, rgba(15,23,42,0.96), rgba(30,64,175,0.92))",
             }}
           >
             <div className="flex items-center justify-between text-[10px] font-bold">
@@ -241,8 +252,14 @@ export default function Home() {
           onClick={() => setLocation(`/workout/${nextWorkoutDay.id}`)}
           className="mt-2.5 w-full py-3 rounded-full text-white font-black tracking-wide text-[14px] transition-all"
           style={{
-            background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
-            boxShadow: "0 16px 26px rgba(37, 99, 235, 0.45)",
+            background:
+              colorTheme === "pink"
+                ? "linear-gradient(135deg, #EC4899, #DB2777)"
+                : "linear-gradient(135deg, #2563EB, #1D4ED8)",
+            boxShadow:
+              colorTheme === "pink"
+                ? "0 16px 26px rgba(236, 72, 153, 0.45)"
+                : "0 16px 26px rgba(37, 99, 235, 0.45)",
           }}
         >
           INICIAR TREINO

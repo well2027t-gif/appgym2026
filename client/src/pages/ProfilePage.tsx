@@ -2,6 +2,7 @@ import { ArrowLeft, Camera, ImagePlus, Save, Trash2, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type UserProfile = {
   name: string;
@@ -19,6 +20,7 @@ const MAX_PROGRESS_PHOTOS = 8;
 
 export default function ProfilePage() {
   const [, setLocation] = useLocation();
+  const { colorTheme, setColorTheme } = useTheme();
   const [profile, setProfile] = useState<UserProfile>({
     name: "",
     weight: "",
@@ -153,7 +155,7 @@ export default function ProfilePage() {
 
       <div className="px-4 max-w-lg mx-auto pt-6 space-y-4">
         <div className="rounded-3xl border border-white/70 bg-white/85 p-4 shadow-lg">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <div className="h-16 w-16 rounded-full border border-[#DBEAFE] bg-[#EFF6FF] overflow-hidden flex items-center justify-center shadow-sm">
               {profile.photoDataUrl ? (
                 <img src={profile.photoDataUrl} alt="Foto de perfil" className="h-full w-full object-cover" />
@@ -162,9 +164,11 @@ export default function ProfilePage() {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-[#64748B] uppercase tracking-widest font-bold">Seu Perfil</p>
+              <p className="text-[11px] text-[#64748B] uppercase tracking-widest font-bold">Seu Perfil</p>
               <p className="text-lg font-black truncate">{profile.name || "Welington"}</p>
-              <p className="text-xs text-[#64748B] truncate">{profile.goal || "Defina seu objetivo para evoluir com foco."}</p>
+              <p className="text-[11px] text-[#64748B] truncate">
+                {profile.goal || "Defina seu objetivo para evoluir."}
+              </p>
             </div>
           </div>
         </div>
@@ -210,6 +214,35 @@ export default function ProfilePage() {
                   </button>
                 )}
               </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[11px] text-[#64748B]">
+              <span className="font-semibold text-[#0F172A]">Mudar cor do app</span>{" "}
+              · toque em uma cor para trocar o tema.
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setColorTheme("blue")}
+                className={`h-6 w-6 rounded-full border transition-all ${
+                  colorTheme === "blue"
+                    ? "border-[#1D4ED8] bg-[#2563EB]"
+                    : "border-[#CBD5F5] bg-[#E5EDFF]"
+                }`}
+                aria-label="Tema azul"
+              />
+              <button
+                type="button"
+                onClick={() => setColorTheme("pink")}
+                className={`h-6 w-6 rounded-full border transition-all ${
+                  colorTheme === "pink"
+                    ? "border-[#DB2777] bg-[#EC4899]"
+                    : "border-[#F9A8D4] bg-[#FFE4F1]"
+                }`}
+                aria-label="Tema rosa"
+              />
             </div>
           </div>
 

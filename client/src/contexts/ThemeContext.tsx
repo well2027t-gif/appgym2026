@@ -1,11 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
+type ColorTheme = "blue" | "pink";
 
 interface ThemeContextType {
   theme: Theme;
   toggleTheme?: () => void;
   switchable: boolean;
+  colorTheme: ColorTheme;
+  setColorTheme: (color: ColorTheme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -28,6 +31,11 @@ export function ThemeProvider({
     }
     return defaultTheme;
   });
+  const [colorTheme, setColorTheme] = useState<ColorTheme>(() => {
+    if (typeof window === "undefined") return "pink";
+    const stored = window.localStorage.getItem("app_color_theme");
+    return stored === "blue" || stored === "pink" ? stored : "pink";
+  });
 
   useEffect(() => {
     const root = document.documentElement;
@@ -42,6 +50,15 @@ export function ThemeProvider({
     }
   }, [theme, switchable]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove("theme-blue", "theme-pink");
+    root.classList.add(colorTheme === "pink" ? "theme-pink" : "theme-blue");
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("app_color_theme", colorTheme);
+    }
+  }, [colorTheme]);
+
   const toggleTheme = switchable
     ? () => {
         setTheme(prev => (prev === "light" ? "dark" : "light"));
@@ -49,7 +66,7 @@ export function ThemeProvider({
     : undefined;
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, switchable }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, switchable, colorTheme, setColorTheme }}>
       {children}
     </ThemeContext.Provider>
   );

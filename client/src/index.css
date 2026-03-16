@@ -42,24 +42,85 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-:root {
-  --primary: #2563EB;
+ :root {
+  --primary: #EC4899;
   --primary-foreground: #fff;
   --radius: 1.25rem;
-  --background: linear-gradient(135deg, #EEF5FF 0%, #DCEBFF 100%);
+  --background: linear-gradient(135deg, #FFF1F7 0%, #FFE4F1 100%);
   --foreground: #0F172A;
   --card: #fff;
   --card-foreground: #0F172A;
   --popover: #fff;
   --popover-foreground: #0F172A;
-  --secondary: #E7F0FF;
+  --secondary: #FFE4F1;
   --secondary-foreground: #0F172A;
-  --muted: #DCEBFF;
+  --muted: #FFD7EC;
   --muted-foreground: #64748B;
-  --accent: #1D4ED8;
+  --accent: #DB2777;
   --accent-foreground: #fff;
-  --destructive: #2563EB;
+  --destructive: #EC4899;
   --destructive-foreground: #fff;
+  --border: #F9A8D4;
+  --input: #FFF1F7;
+  --ring: #EC4899;
+  --chart-1: #EC4899;
+  --chart-2: #DB2777;
+  --chart-3: #F472B6;
+  --chart-4: #F9A8D4;
+  --chart-5: #FBCFE8;
+  --sidebar: #fff;
+  --sidebar-foreground: #0F172A;
+  --sidebar-primary: #EC4899;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #FFE4F1;
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: #F9A8D4;
+  --sidebar-ring: #EC4899;
+}
+
+.dark {
+  --primary: #EC4899;
+  --primary-foreground: #fff;
+  --background: linear-gradient(135deg, #FFF1F7 0%, #FFE4F1 100%);
+  --foreground: #0F172A;
+  --card: #fff;
+  --card-foreground: #0F172A;
+  --popover: #fff;
+  --popover-foreground: #0F172A;
+  --secondary: #FFE4F1;
+  --secondary-foreground: #0F172A;
+  --muted: #FFD7EC;
+  --muted-foreground: #64748B;
+  --accent: #DB2777;
+  --accent-foreground: #fff;
+  --destructive: #EC4899;
+  --destructive-foreground: #fff;
+  --border: #F9A8D4;
+  --input: #FFF1F7;
+  --ring: #EC4899;
+  --chart-1: #EC4899;
+  --chart-2: #DB2777;
+  --chart-3: #F472B6;
+  --chart-4: #F9A8D4;
+  --chart-5: #FBCFE8;
+  --sidebar: #fff;
+  --sidebar-foreground: #0F172A;
+  --sidebar-primary: #EC4899;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #FFE4F1;
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: #F9A8D4;
+  --sidebar-ring: #EC4899;
+}
+
+.theme-blue {
+  --primary: #2563EB;
+  --primary-foreground: #fff;
+  --background: linear-gradient(135deg, #EEF5FF 0%, #DCEBFF 100%);
+  --secondary: #E7F0FF;
+  --muted: #DCEBFF;
+  --accent: #1D4ED8;
+  --destructive: #2563EB;
   --border: #DBEAFE;
   --input: #EEF5FF;
   --ring: #2563EB;
@@ -68,49 +129,105 @@
   --chart-3: #3B82F6;
   --chart-4: #60A5FA;
   --chart-5: #93C5FD;
-  --sidebar: #fff;
-  --sidebar-foreground: #0F172A;
   --sidebar-primary: #2563EB;
-  --sidebar-primary-foreground: #fff;
   --sidebar-accent: #E7F0FF;
-  --sidebar-accent-foreground: #0F172A;
   --sidebar-border: #DBEAFE;
   --sidebar-ring: #2563EB;
 }
 
-.dark {
-  --primary: #2563EB;
+.theme-pink {
+  --primary: #EC4899;
   --primary-foreground: #fff;
-  --background: linear-gradient(135deg, #EEF5FF 0%, #DCEBFF 100%);
-  --foreground: #0F172A;
-  --card: #fff;
-  --card-foreground: #0F172A;
-  --popover: #fff;
-  --popover-foreground: #0F172A;
-  --secondary: #E7F0FF;
-  --secondary-foreground: #0F172A;
-  --muted: #DCEBFF;
-  --muted-foreground: #64748B;
-  --accent: #1D4ED8;
-  --accent-foreground: #fff;
-  --destructive: #2563EB;
-  --destructive-foreground: #fff;
-  --border: #DBEAFE;
-  --input: #EEF5FF;
-  --ring: #2563EB;
-  --chart-1: #2563EB;
-  --chart-2: #1D4ED8;
-  --chart-3: #3B82F6;
-  --chart-4: #60A5FA;
-  --chart-5: #93C5FD;
-  --sidebar: #fff;
-  --sidebar-foreground: #0F172A;
-  --sidebar-primary: #2563EB;
-  --sidebar-primary-foreground: #fff;
-  --sidebar-accent: #E7F0FF;
-  --sidebar-accent-foreground: #0F172A;
-  --sidebar-border: #DBEAFE;
-  --sidebar-ring: #2563EB;
+  --background: linear-gradient(135deg, #FFF1F7 0%, #FFE4F1 100%);
+  --secondary: #FFE4F1;
+  --muted: #FFD7EC;
+  --accent: #DB2777;
+  --destructive: #EC4899;
+  --border: #F9A8D4;
+  --input: #FFF1F7;
+  --ring: #EC4899;
+  --chart-1: #EC4899;
+  --chart-2: #DB2777;
+  --chart-3: #F472B6;
+  --chart-4: #F9A8D4;
+  --chart-5: #FBCFE8;
+  --sidebar-primary: #EC4899;
+  --sidebar-accent: #FFE4F1;
+  --sidebar-border: #F9A8D4;
+  --sidebar-ring: #EC4899;
+}
+
+/* Overrides for screens that still use fixed blue Tailwind arbitrary colors */
+.theme-pink .text-\[\#2563EB\],
+.theme-pink .text-\[\#1D4ED8\],
+.theme-pink .text-\[\#1E3A8A\],
+.theme-pink .text-\[\#1E40AF\],
+.theme-pink .text-\[\#3B82F6\],
+.theme-pink .text-\[\#60A5FA\],
+.theme-pink .text-\[\#93C5FD\] {
+  color: #DB2777 !important;
+}
+
+.theme-pink .bg-\[\#EFF6FF\],
+.theme-pink .bg-\[\#E7F0FF\],
+.theme-pink .bg-\[\#EEF5FF\],
+.theme-pink .bg-\[\#DBEAFE\],
+.theme-pink .bg-\[\#F8FAFF\],
+.theme-pink .bg-\[\#EAF2FF\],
+.theme-pink .bg-\[\#F4F9FF\] {
+  background-color: #FFF1F7 !important;
+}
+
+/* Qualquer botão azul sólido vira rosa no tema rosa */
+.theme-pink .bg-\[\#2563EB\] {
+  background-color: #EC4899 !important;
+}
+
+.theme-pink .border-\[\#2563EB\],
+.theme-pink .border-\[\#1D4ED8\],
+.theme-pink .border-\[\#3B82F6\],
+.theme-pink .border-\[\#60A5FA\],
+.theme-pink .border-\[\#93C5FD\],
+.theme-pink .border-\[\#BFDBFE\],
+.theme-pink .border-\[\#DBEAFE\] {
+  border-color: #F9A8D4 !important;
+}
+
+.theme-pink .from-\[\#2563EB\] {
+  --tw-gradient-from: #F472B6 var(--tw-gradient-from-position) !important;
+}
+
+.theme-pink .from-\[\#60A5FA\],
+.theme-pink .from-\[\#93C5FD\],
+.theme-pink .from-\[\#DBEAFE\] {
+  --tw-gradient-from: #FBCFE8 var(--tw-gradient-from-position) !important;
+}
+
+.theme-pink .to-\[\#1D4ED8\],
+.theme-pink .to-\[\#2563EB\] {
+  --tw-gradient-to: #DB2777 var(--tw-gradient-to-position) !important;
+}
+
+.theme-pink .via-\[\#2563EB\] {
+  --tw-gradient-via: #EC4899 var(--tw-gradient-via-position) !important;
+}
+
+.theme-pink .focus\:border-\[\#2563EB\]:focus {
+  border-color: #EC4899 !important;
+}
+
+.theme-pink .hover\:bg-\[\#1D4ED8\]:hover,
+.theme-pink .hover\:bg-\[\#2563EB\]:hover {
+  background-color: #DB2777 !important;
+}
+
+/* Make generic gradients go pink as well */
+.theme-pink .bg-gradient-to-br {
+  background-image: linear-gradient(135deg, #FFF1F7 0%, #FFE4F1 100%) !important;
+}
+
+.theme-pink .bg-gradient-to-r {
+  background-image: linear-gradient(to right, #F9A8D4, #EC4899) !important;
 }
 
 @layer base {
@@ -118,8 +235,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    background: linear-gradient(135deg, #EEF5FF 0%, #DCEBFF 100%);
-    color: #0F172A;
+    background: var(--background);
+    color: var(--foreground);
     font-family: 'Space Grotesk', 'Inter', sans-serif;
     min-height: 100vh;
   }

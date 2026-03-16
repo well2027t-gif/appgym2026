@@ -29,28 +29,71 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { defaultWorkoutProgram, type MuscleGroup } from "@/lib/workoutData";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const GOALS = [
-  { id: "hipertrofia", label: "Hipertrofia", icon: Flame, hint: "Ganho de massa" },
-  { id: "emagrecimento", label: "Emagrecimento", icon: Scale, hint: "Queima de gordura" },
-  { id: "resistencia", label: "Resistência", icon: HeartPulse, hint: "Mais fôlego" },
-  { id: "condicionamento", label: "Condicionamento", icon: Timer, hint: "Melhor preparo" },
+  {
+    id: "hipertrofia",
+    label: "Hipertrofia",
+    icon: Flame,
+    hint: "Ganho de massa",
+  },
+  {
+    id: "emagrecimento",
+    label: "Emagrecimento",
+    icon: Scale,
+    hint: "Queima de gordura",
+  },
+  {
+    id: "resistencia",
+    label: "Resistência",
+    icon: HeartPulse,
+    hint: "Mais fôlego",
+  },
+  {
+    id: "condicionamento",
+    label: "Condicionamento",
+    icon: Timer,
+    hint: "Melhor preparo",
+  },
   { id: "forca", label: "Força", icon: Dumbbell, hint: "Cargas mais altas" },
-  { id: "definicao", label: "Definição", icon: Sparkles, hint: "Corpo mais seco" },
-  { id: "mobilidade", label: "Mobilidade", icon: Activity, hint: "Movimento e postura" },
+  {
+    id: "definicao",
+    label: "Definição",
+    icon: Sparkles,
+    hint: "Corpo mais seco",
+  },
+  {
+    id: "mobilidade",
+    label: "Mobilidade",
+    icon: Activity,
+    hint: "Movimento e postura",
+  },
   { id: "saude", label: "Saúde", icon: HeartPulse, hint: "Qualidade de vida" },
 ] as const;
 
-const DAYS = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"] as const;
+const DAYS = [
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sábado",
+] as const;
 const TRAINING_PERIODS = ["Manhã", "Tarde", "Noite"] as const;
 const LEVELS = ["Iniciante", "Intermediário", "Avançado"] as const;
 const LEVEL_DESCRIPTIONS: Record<(typeof LEVELS)[number], string> = {
   Iniciante: "Para quem está começando agora ou voltou a treinar recentemente.",
-  Intermediário: "Para quem já treina com frequência e tem boa execução dos movimentos.",
-  Avançado: "Para quem tem experiência alta, volume maior e controle técnico das cargas.",
+  Intermediário:
+    "Para quem já treina com frequência e tem boa execução dos movimentos.",
+  Avançado:
+    "Para quem tem experiência alta, volume maior e controle técnico das cargas.",
 };
 const SPLITS = ["Full Body", "AB", "ABC", "ABCD"] as const;
-const SPLIT_DESCRIPTIONS: Record<(typeof SPLITS)[number], { summary: string; example: string }> = {
+const SPLIT_DESCRIPTIONS: Record<
+  (typeof SPLITS)[number],
+  { summary: string; example: string }
+> = {
   "Full Body": {
     summary: "Treina o corpo inteiro no mesmo dia.",
     example: "Exemplo: peito, costas, pernas e abdômen no mesmo treino.",
@@ -69,9 +112,22 @@ const SPLIT_DESCRIPTIONS: Record<(typeof SPLITS)[number], { summary: string; exa
   },
 };
 const DURATIONS = [30, 45, 60] as const;
-const EXERCISE_FILTERS = ["Todos", "Cardio", "Peito", "Costas", "Pernas", "Abdômen"] as const;
+const EXERCISE_FILTERS = [
+  "Todos",
+  "Cardio",
+  "Peito",
+  "Costas",
+  "Pernas",
+  "Abdômen",
+] as const;
 
-type ExerciseVisual = "bike" | "activity" | "footprints" | "standing" | "jump" | "dumbbell";
+type ExerciseVisual =
+  | "bike"
+  | "activity"
+  | "footprints"
+  | "standing"
+  | "jump"
+  | "dumbbell";
 type ExerciseLibraryItem = {
   id: string;
   name: string;
@@ -81,7 +137,8 @@ type ExerciseLibraryItem = {
 
 function visualByMuscle(muscle: MuscleGroup): ExerciseVisual {
   if (muscle === "Cardio") return "footprints";
-  if (muscle === "Pernas" || muscle === "Glúteo" || muscle === "Posterior") return "standing";
+  if (muscle === "Pernas" || muscle === "Glúteo" || muscle === "Posterior")
+    return "standing";
   if (muscle === "Abdômen") return "activity";
   return "dumbbell";
 }
@@ -100,7 +157,9 @@ const EXERCISE_LIBRARY: ExerciseLibraryItem[] = (() => {
       });
     }
   }
-  return Array.from(uniqueByName.values()).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+  return Array.from(uniqueByName.values()).sort((a, b) =>
+    a.name.localeCompare(b.name, "pt-BR")
+  );
 })();
 
 const WIZARD_STEPS = [
@@ -134,33 +193,50 @@ function getExerciseIcon(visual: (typeof EXERCISE_LIBRARY)[number]["visual"]) {
 
 export default function TreinoPage() {
   const [, setLocation] = useLocation();
+  const { colorTheme } = useTheme();
   const [step, setStep] = useState(0);
   const [hasSavedSetup, setHasSavedSetup] = useState(false);
   const [goal, setGoal] = useState<(typeof GOALS)[number]["id"]>("hipertrofia");
-  const [trainingDay, setTrainingDay] = useState<(typeof DAYS)[number]>("Segunda-feira");
-  const [trainingPeriod, setTrainingPeriod] = useState<(typeof TRAINING_PERIODS)[number]>("Manhã");
+  const [trainingDay, setTrainingDay] =
+    useState<(typeof DAYS)[number]>("Segunda-feira");
+  const [trainingPeriod, setTrainingPeriod] =
+    useState<(typeof TRAINING_PERIODS)[number]>("Manhã");
   const [level, setLevel] = useState<(typeof LEVELS)[number]>("Intermediário");
   const [daysPerWeek, setDaysPerWeek] = useState(4);
   const [split, setSplit] = useState<(typeof SPLITS)[number]>("AB");
   const [duration, setDuration] = useState<(typeof DURATIONS)[number]>(45);
-  const [selectedExercises, setSelectedExercises] = useState<SelectedExerciseItem[]>([]);
-  const [dayTrainings, setDayTrainings] = useState<Record<DayName, SelectedExerciseItem[]>>(() =>
-    Object.fromEntries(DAYS.map((day) => [day, []])) as Record<DayName, SelectedExerciseItem[]>,
+  const [selectedExercises, setSelectedExercises] = useState<
+    SelectedExerciseItem[]
+  >([]);
+  const [dayTrainings, setDayTrainings] = useState<
+    Record<DayName, SelectedExerciseItem[]>
+  >(
+    () =>
+      Object.fromEntries(DAYS.map(day => [day, []])) as Record<
+        DayName,
+        SelectedExerciseItem[]
+      >
   );
-  const [exerciseFilter, setExerciseFilter] = useState<(typeof EXERCISE_FILTERS)[number]>("Todos");
+  const [exerciseFilter, setExerciseFilter] =
+    useState<(typeof EXERCISE_FILTERS)[number]>("Todos");
   const [exerciseQuery, setExerciseQuery] = useState("");
-  const [pendingExercise, setPendingExercise] = useState<ExerciseLibraryItem | null>(null);
+  const [pendingExercise, setPendingExercise] =
+    useState<ExerciseLibraryItem | null>(null);
   const [pendingSets, setPendingSets] = useState(3);
   const [pendingReps, setPendingReps] = useState(10);
   const [pendingWeight, setPendingWeight] = useState(0);
 
-  const selectedGoalLabel = GOALS.find((item) => item.id === goal)?.label ?? "Hipertrofia";
+  const selectedGoalLabel =
+    GOALS.find(item => item.id === goal)?.label ?? "Hipertrofia";
   const filteredExercises = useMemo(() => {
     const q = exerciseQuery.trim().toLowerCase();
-    return EXERCISE_LIBRARY.filter((exercise) => {
-      const filterOk = exerciseFilter === "Todos" || exercise.muscle === exerciseFilter;
+    return EXERCISE_LIBRARY.filter(exercise => {
+      const filterOk =
+        exerciseFilter === "Todos" || exercise.muscle === exerciseFilter;
       const queryOk =
-        q.length === 0 || exercise.name.toLowerCase().includes(q) || exercise.muscle.toLowerCase().includes(q);
+        q.length === 0 ||
+        exercise.name.toLowerCase().includes(q) ||
+        exercise.muscle.toLowerCase().includes(q);
       return filterOk && queryOk;
     });
   }, [exerciseFilter, exerciseQuery]);
@@ -182,7 +258,11 @@ export default function TreinoPage() {
       };
       if (saved.goal) setGoal(saved.goal);
       if (saved.level) setLevel(saved.level);
-      if (saved.daysPerWeek && saved.daysPerWeek >= 1 && saved.daysPerWeek <= 7) {
+      if (
+        saved.daysPerWeek &&
+        saved.daysPerWeek >= 1 &&
+        saved.daysPerWeek <= 7
+      ) {
         setDaysPerWeek(saved.daysPerWeek);
       }
       if (saved.split) setSplit(saved.split);
@@ -191,7 +271,10 @@ export default function TreinoPage() {
       if (saved.trainingPeriod) setTrainingPeriod(saved.trainingPeriod);
       if (saved.dayTrainings) {
         const mergedTrainings = {
-          ...(Object.fromEntries(DAYS.map((day) => [day, []])) as Record<DayName, SelectedExerciseItem[]>),
+          ...(Object.fromEntries(DAYS.map(day => [day, []])) as Record<
+            DayName,
+            SelectedExerciseItem[]
+          >),
           ...saved.dayTrainings,
         };
         setDayTrainings(mergedTrainings);
@@ -214,7 +297,9 @@ export default function TreinoPage() {
 
   function confirmExerciseConfig() {
     if (!pendingExercise) return;
-    const alreadyExists = selectedExercises.some((item) => item.id === pendingExercise.id);
+    const alreadyExists = selectedExercises.some(
+      item => item.id === pendingExercise.id
+    );
     if (!alreadyExists) {
       const nextExercises = [
         ...selectedExercises,
@@ -236,7 +321,7 @@ export default function TreinoPage() {
 
   function updateCurrentDayExercises(nextExercises: SelectedExerciseItem[]) {
     setSelectedExercises(nextExercises);
-    setDayTrainings((prev) => ({ ...prev, [trainingDay]: nextExercises }));
+    setDayTrainings(prev => ({ ...prev, [trainingDay]: nextExercises }));
   }
 
   function selectTrainingDay(day: DayName) {
@@ -246,17 +331,18 @@ export default function TreinoPage() {
 
   function handleGoalSelection(nextGoal: (typeof GOALS)[number]["id"]) {
     if (nextGoal === goal) return;
-    const hasAnyTraining = Object.values(dayTrainings).some((items) => items.length > 0);
+    const hasAnyTraining = Object.values(dayTrainings).some(
+      items => items.length > 0
+    );
 
     if (hasAnyTraining && typeof window !== "undefined") {
       const confirmed = window.confirm(
-        "Você já possui treinos montados. Deseja excluir todos os treinos para trocar o objetivo?",
+        "Você já possui treinos montados. Deseja excluir todos os treinos para trocar o objetivo?"
       );
       if (!confirmed) return;
-      const resetTrainings = Object.fromEntries(DAYS.map((day) => [day, []])) as Record<
-        DayName,
-        SelectedExerciseItem[]
-      >;
+      const resetTrainings = Object.fromEntries(
+        DAYS.map(day => [day, []])
+      ) as Record<DayName, SelectedExerciseItem[]>;
       setDayTrainings(resetTrainings);
       setSelectedExercises([]);
     }
@@ -265,11 +351,13 @@ export default function TreinoPage() {
   }
 
   function removeExercise(exerciseId: string) {
-    updateCurrentDayExercises(selectedExercises.filter((item) => item.id !== exerciseId));
+    updateCurrentDayExercises(
+      selectedExercises.filter(item => item.id !== exerciseId)
+    );
   }
 
   function moveExercise(exerciseId: string, direction: "up" | "down") {
-    const index = selectedExercises.findIndex((item) => item.id === exerciseId);
+    const index = selectedExercises.findIndex(item => item.id === exerciseId);
     if (index < 0) return;
     const target = direction === "up" ? index - 1 : index + 1;
     if (target < 0 || target >= selectedExercises.length) return;
@@ -279,11 +367,11 @@ export default function TreinoPage() {
   }
 
   function nextStep() {
-    setStep((prev) => Math.min(prev + 1, WIZARD_STEPS.length - 1));
+    setStep(prev => Math.min(prev + 1, WIZARD_STEPS.length - 1));
   }
 
   function prevStep() {
-    setStep((prev) => Math.max(prev - 1, 0));
+    setStep(prev => Math.max(prev - 1, 0));
   }
 
   function getNextDay(currentDay: (typeof DAYS)[number]) {
@@ -304,7 +392,10 @@ export default function TreinoPage() {
         trainingPeriod,
         dayTrainings,
       };
-      window.localStorage.setItem(TRAINING_WIZARD_STORAGE_KEY, JSON.stringify(payload));
+      window.localStorage.setItem(
+        TRAINING_WIZARD_STORAGE_KEY,
+        JSON.stringify(payload)
+      );
     }
     setHasSavedSetup(true);
     const nextDay = getNextDay(trainingDay);
@@ -323,7 +414,9 @@ export default function TreinoPage() {
       return;
     }
     if (typeof window !== "undefined") {
-      const confirmed = window.confirm("Tem certeza que deseja excluir os treinos deste dia?");
+      const confirmed = window.confirm(
+        "Tem certeza que deseja excluir os treinos deste dia?"
+      );
       if (!confirmed) return;
     }
     updateCurrentDayExercises([]);
@@ -334,12 +427,12 @@ export default function TreinoPage() {
       className="min-h-[100dvh] overflow-hidden text-[#0F172A]"
       style={{
         backgroundImage:
-          "radial-gradient(circle at top, rgba(191,219,254,0.65), rgba(255,255,255,0.9) 34%), linear-gradient(180deg, rgba(255,255,255,0.94), rgba(226,239,255,0.96))",
+          colorTheme === "pink"
+            ? "radial-gradient(circle at top, rgba(252,231,243,0.8), rgba(255,255,255,0.96) 34%), linear-gradient(180deg, rgba(255,250,252,0.96), rgba(255,228,244,0.96))"
+            : "radial-gradient(circle at top, rgba(191,219,254,0.65), rgba(255,255,255,0.9) 34%), linear-gradient(180deg, rgba(255,255,255,0.94), rgba(226,239,255,0.96))",
       }}
     >
-      <div
-        className="min-h-[100dvh] overflow-y-auto px-4 max-w-[420px] mx-auto pt-2 pb-[calc(7.25rem+env(safe-area-inset-bottom))] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-      >
+      <div className="min-h-[100dvh] overflow-y-auto px-4 max-w-[420px] mx-auto pt-2 pb-[calc(7.25rem+env(safe-area-inset-bottom))] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <div className="sticky top-0 z-20 bg-white/92 backdrop-blur-md rounded-2xl border border-[#DBEAFE] shadow px-3 py-2.5">
           <div className="flex items-center justify-between">
             <button
@@ -349,7 +442,9 @@ export default function TreinoPage() {
             >
               <ArrowLeft size={18} />
             </button>
-            <h1 className="text-[16px] font-black text-[#0F172A]">Personalizar Treino</h1>
+            <h1 className="text-[16px] font-black text-[#0F172A]">
+              Personalizar Treino
+            </h1>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] font-black text-[#1D4ED8]">
                 {step + 1}/{WIZARD_STEPS.length}
@@ -368,15 +463,25 @@ export default function TreinoPage() {
             {WIZARD_STEPS.map((_, idx) => (
               <div
                 key={idx}
-                className={`h-1.5 rounded-full ${idx <= step ? "bg-[#2563EB]" : "bg-[#DBEAFE]"}`}
+                className={`h-1.5 rounded-full ${
+                  idx <= step
+                    ? colorTheme === "pink"
+                      ? "bg-[#EC4899]"
+                      : "bg-[#2563EB]"
+                    : "bg-[#DBEAFE]"
+                }`}
               />
             ))}
           </div>
         </div>
 
         <div className="mt-2 rounded-3xl border border-[#DBEAFE] bg-white/92 p-3 shadow-[0_18px_34px_rgba(37,99,235,0.14)]">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#64748B]">Etapa atual</p>
-          <p className="text-[18px] font-black text-[#0F172A]">{WIZARD_STEPS[step]}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#64748B]">
+            Etapa atual
+          </p>
+          <p className="text-[18px] font-black text-[#0F172A]">
+            {WIZARD_STEPS[step]}
+          </p>
           <p className="text-[11px] text-[#64748B] mt-1">
             Configure uma parte por vez e avance em “Próximo”.
           </p>
@@ -392,10 +497,12 @@ export default function TreinoPage() {
             <section className="rounded-[22px] border border-[#DBEAFE] bg-white p-3.5 shadow">
               <div className="mb-2.5 flex items-center gap-2">
                 <Target size={14} className="text-[#2563EB]" />
-                <h2 className="text-[13px] font-black text-[#0F172A]">Objetivo do treino</h2>
+                <h2 className="text-[13px] font-black text-[#0F172A]">
+                  Objetivo do treino
+                </h2>
               </div>
-            <div className="grid grid-cols-2 gap-2">
-                {GOALS.map((item) => {
+              <div className="grid grid-cols-2 gap-2">
+                {GOALS.map(item => {
                   const selected = goal === item.id;
                   const Icon = item.icon;
                   return (
@@ -404,14 +511,25 @@ export default function TreinoPage() {
                       type="button"
                       onClick={() => handleGoalSelection(item.id)}
                       className={`rounded-2xl border p-3 flex flex-col items-center gap-1.5 ${
-                        selected ? "bg-[#EFF6FF] border-[#2563EB]" : "bg-white border-[#E5E7EB]"
+                        selected
+                          ? "bg-[#EFF6FF] border-[#2563EB]"
+                          : "bg-white border-[#E5E7EB]"
                       }`}
                     >
-                      <Icon size={16} className={selected ? "text-[#2563EB]" : "text-[#64748B]"} />
-                      <span className={`text-[12px] font-bold leading-tight text-center ${selected ? "text-[#1E40AF]" : "text-[#334155]"}`}>
+                      <Icon
+                        size={16}
+                        className={
+                          selected ? "text-[#2563EB]" : "text-[#64748B]"
+                        }
+                      />
+                      <span
+                        className={`text-[12px] font-bold leading-tight text-center ${selected ? "text-[#1E40AF]" : "text-[#334155]"}`}
+                      >
                         {item.label}
                       </span>
-                      <span className={`text-[10px] leading-tight text-center ${selected ? "text-[#1D4ED8]" : "text-[#64748B]"}`}>
+                      <span
+                        className={`text-[10px] leading-tight text-center ${selected ? "text-[#1D4ED8]" : "text-[#64748B]"}`}
+                      >
                         {item.hint}
                       </span>
                     </button>
@@ -425,10 +543,12 @@ export default function TreinoPage() {
             <section className="rounded-[22px] border border-[#DBEAFE] bg-white p-3.5 shadow">
               <div className="mb-2.5 flex items-center gap-2">
                 <CalendarDays size={14} className="text-[#2563EB]" />
-                <h2 className="text-[13px] font-black text-[#0F172A]">Escolha o dia do treino</h2>
+                <h2 className="text-[13px] font-black text-[#0F172A]">
+                  Escolha o dia do treino
+                </h2>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                {DAYS.map((day) => (
+                {DAYS.map(day => (
                   <button
                     key={day}
                     type="button"
@@ -449,7 +569,7 @@ export default function TreinoPage() {
                   Período do treino
                 </p>
                 <div className="mt-2 grid grid-cols-3 gap-2">
-                  {TRAINING_PERIODS.map((period) => (
+                  {TRAINING_PERIODS.map(period => (
                     <button
                       key={period}
                       type="button"
@@ -472,7 +592,9 @@ export default function TreinoPage() {
                     ? `${selectedExercises.length} exercício(s) já salvo(s) em ${trainingDay}.`
                     : `Nenhum exercício salvo em ${trainingDay} ainda.`}
                 </p>
-                <div className={`mt-2 grid gap-2 ${selectedExercises.length > 0 ? "grid-cols-2" : "grid-cols-1"}`}>
+                <div
+                  className={`mt-2 grid gap-2 ${selectedExercises.length > 0 ? "grid-cols-2" : "grid-cols-1"}`}
+                >
                   <button
                     type="button"
                     onClick={() => setStep(6)}
@@ -498,16 +620,20 @@ export default function TreinoPage() {
             <section className="rounded-[22px] border border-[#DBEAFE] bg-white p-3.5 shadow">
               <div className="mb-2 flex items-center gap-2">
                 <Gauge size={14} className="text-[#2563EB]" />
-                <h2 className="text-[13px] font-black text-[#0F172A]">Nível de treino</h2>
+                <h2 className="text-[13px] font-black text-[#0F172A]">
+                  Nível de treino
+                </h2>
               </div>
               <div className="grid grid-cols-3 gap-1.5 rounded-full bg-[#F1F5F9] p-1">
-                {LEVELS.map((item) => (
+                {LEVELS.map(item => (
                   <button
                     key={item}
                     type="button"
                     onClick={() => setLevel(item)}
                     className={`rounded-full px-2 py-2 text-[12px] font-bold ${
-                      level === item ? "bg-[#2563EB] text-white" : "text-[#334155]"
+                      level === item
+                        ? "bg-[#2563EB] text-white"
+                        : "text-[#334155]"
                     }`}
                   >
                     {item}
@@ -515,8 +641,12 @@ export default function TreinoPage() {
                 ))}
               </div>
               <div className="mt-3 rounded-xl border border-[#DBEAFE] bg-[#F8FAFF] px-3 py-2.5">
-                <p className="text-[10px] font-black uppercase tracking-wide text-[#1D4ED8]">{level}</p>
-                <p className="mt-1 text-[11px] text-[#334155]">{LEVEL_DESCRIPTIONS[level]}</p>
+                <p className="text-[10px] font-black uppercase tracking-wide text-[#1D4ED8]">
+                  {level}
+                </p>
+                <p className="mt-1 text-[11px] text-[#334155]">
+                  {LEVEL_DESCRIPTIONS[level]}
+                </p>
               </div>
             </section>
           )}
@@ -526,9 +656,13 @@ export default function TreinoPage() {
               <div className="mb-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CalendarDays size={14} className="text-[#2563EB]" />
-                  <h2 className="text-[13px] font-black text-[#0F172A]">Dias por semana</h2>
+                  <h2 className="text-[13px] font-black text-[#0F172A]">
+                    Dias por semana
+                  </h2>
                 </div>
-                <span className="text-[12px] font-black text-[#1D4ED8]">{daysPerWeek} dias</span>
+                <span className="text-[12px] font-black text-[#1D4ED8]">
+                  {daysPerWeek} dias
+                </span>
               </div>
               <div className="rounded-xl border border-[#DBEAFE] bg-[#F8FAFF] px-3 py-3">
                 <div className="relative">
@@ -543,12 +677,12 @@ export default function TreinoPage() {
                     max={7}
                     step={1}
                     value={daysPerWeek}
-                    onChange={(e) => setDaysPerWeek(Number(e.target.value))}
+                    onChange={e => setDaysPerWeek(Number(e.target.value))}
                     className="absolute inset-0 h-2 w-full opacity-0 cursor-pointer"
                   />
                 </div>
                 <div className="mt-2 grid grid-cols-7 gap-1">
-                  {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+                  {[1, 2, 3, 4, 5, 6, 7].map(value => (
                     <button
                       key={value}
                       type="button"
@@ -571,16 +705,20 @@ export default function TreinoPage() {
             <section className="rounded-[22px] border border-[#DBEAFE] bg-white p-3.5 shadow">
               <div className="mb-2 flex items-center gap-2">
                 <Layers3 size={14} className="text-[#2563EB]" />
-                <h2 className="text-[13px] font-black text-[#0F172A]">Divisão de treino</h2>
+                <h2 className="text-[13px] font-black text-[#0F172A]">
+                  Divisão de treino
+                </h2>
               </div>
               <div className="grid grid-cols-4 gap-2">
-                {SPLITS.map((item) => (
+                {SPLITS.map(item => (
                   <button
                     key={item}
                     type="button"
                     onClick={() => setSplit(item)}
                     className={`rounded-full px-2 py-2 text-[12px] font-bold ${
-                      split === item ? "bg-[#2563EB] text-white" : "bg-[#F1F5F9] text-[#334155]"
+                      split === item
+                        ? "bg-[#2563EB] text-white"
+                        : "bg-[#F1F5F9] text-[#334155]"
                     }`}
                   >
                     {item}
@@ -588,9 +726,15 @@ export default function TreinoPage() {
                 ))}
               </div>
               <div className="mt-3 rounded-xl border border-[#DBEAFE] bg-[#F8FAFF] px-3 py-2.5">
-                <p className="text-[10px] font-black uppercase tracking-wide text-[#1D4ED8]">{split}</p>
-                <p className="mt-1 text-[11px] text-[#334155]">{SPLIT_DESCRIPTIONS[split].summary}</p>
-                <p className="mt-1 text-[10px] text-[#64748B]">{SPLIT_DESCRIPTIONS[split].example}</p>
+                <p className="text-[10px] font-black uppercase tracking-wide text-[#1D4ED8]">
+                  {split}
+                </p>
+                <p className="mt-1 text-[11px] text-[#334155]">
+                  {SPLIT_DESCRIPTIONS[split].summary}
+                </p>
+                <p className="mt-1 text-[10px] text-[#64748B]">
+                  {SPLIT_DESCRIPTIONS[split].example}
+                </p>
               </div>
             </section>
           )}
@@ -599,16 +743,20 @@ export default function TreinoPage() {
             <section className="rounded-[22px] border border-[#DBEAFE] bg-white p-3.5 shadow">
               <div className="mb-2 flex items-center gap-2">
                 <Clock3 size={14} className="text-[#2563EB]" />
-                <h2 className="text-[13px] font-black text-[#0F172A]">Duração do treino</h2>
+                <h2 className="text-[13px] font-black text-[#0F172A]">
+                  Duração do treino
+                </h2>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {DURATIONS.map((item) => (
+                {DURATIONS.map(item => (
                   <button
                     key={item}
                     type="button"
                     onClick={() => setDuration(item)}
                     className={`rounded-full px-2 py-2 text-[12px] font-bold ${
-                      duration === item ? "bg-[#2563EB] text-white" : "bg-[#F1F5F9] text-[#334155]"
+                      duration === item
+                        ? "bg-[#2563EB] text-white"
+                        : "bg-[#F1F5F9] text-[#334155]"
                     }`}
                   >
                     {item} min
@@ -622,10 +770,13 @@ export default function TreinoPage() {
             <section className="rounded-[22px] border border-[#DBEAFE] bg-white p-3.5 shadow">
               <div className="mb-2 flex items-center gap-2">
                 <Sparkles size={14} className="text-[#2563EB]" />
-                <h2 className="text-[13px] font-black text-[#0F172A]">Montar treino do dia</h2>
+                <h2 className="text-[13px] font-black text-[#0F172A]">
+                  Montar treino do dia
+                </h2>
               </div>
               <p className="text-[11px] text-[#64748B] mb-2">
-                Primeiro adicione na biblioteca, depois confira na lista do treino.
+                Primeiro adicione na biblioteca, depois confira na lista do
+                treino.
               </p>
 
               <div className="mb-2 rounded-xl border border-[#DBEAFE] bg-[#F8FAFF] px-2.5 py-2">
@@ -638,14 +789,14 @@ export default function TreinoPage() {
                 <input
                   type="text"
                   value={exerciseQuery}
-                  onChange={(e) => setExerciseQuery(e.target.value)}
+                  onChange={e => setExerciseQuery(e.target.value)}
                   placeholder="Buscar exercício..."
                   className="w-full bg-transparent text-[12px] text-[#0F172A] outline-none placeholder:text-[#94A3B8]"
                 />
               </div>
 
               <div className="mb-3 flex gap-1.5 overflow-x-auto pb-1">
-                {EXERCISE_FILTERS.map((item) => (
+                {EXERCISE_FILTERS.map(item => (
                   <button
                     key={item}
                     type="button"
@@ -662,23 +813,34 @@ export default function TreinoPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                {filteredExercises.map((exercise) => {
-                  const added = selectedExercises.some((item) => item.id === exercise.id);
+                {filteredExercises.map(exercise => {
+                  const added = selectedExercises.some(
+                    item => item.id === exercise.id
+                  );
                   const Icon = getExerciseIcon(exercise.visual);
                   return (
-                    <div key={exercise.id} className="rounded-2xl border border-[#DBEAFE] overflow-hidden bg-white shadow-sm">
+                    <div
+                      key={exercise.id}
+                      className="rounded-2xl border border-[#DBEAFE] overflow-hidden bg-white shadow-sm"
+                    >
                       <div className="h-20 w-full bg-[#EAF2FF] border-b border-[#DBEAFE] flex items-center justify-center">
                         <Icon size={30} className="text-[#2563EB]" />
                       </div>
                       <div className="p-2">
-                        <p className="text-[12px] font-black text-[#0F172A]">{exercise.name}</p>
-                        <p className="text-[10px] text-[#64748B]">{exercise.muscle}</p>
+                        <p className="text-[12px] font-black text-[#0F172A]">
+                          {exercise.name}
+                        </p>
+                        <p className="text-[10px] text-[#64748B]">
+                          {exercise.muscle}
+                        </p>
                         <button
                           type="button"
                           onClick={() => openExerciseConfig(exercise)}
                           disabled={added}
                           className={`mt-2 w-full rounded-lg py-1.5 text-[11px] font-bold flex items-center justify-center gap-1 ${
-                            added ? "bg-[#E2E8F0] text-[#64748B]" : "bg-[#2563EB] text-white hover:bg-[#1D4ED8]"
+                            added
+                              ? "bg-[#E2E8F0] text-[#64748B]"
+                              : "bg-[#2563EB] text-white hover:bg-[#1D4ED8]"
                           }`}
                         >
                           {added ? <Check size={12} /> : <Plus size={12} />}
@@ -720,9 +882,12 @@ export default function TreinoPage() {
                           <p className="text-[12px] font-black text-[#0F172A] truncate">
                             {idx + 1}. {exercise.name}
                           </p>
-                          <p className="text-[10px] text-[#64748B]">{exercise.muscle}</p>
+                          <p className="text-[10px] text-[#64748B]">
+                            {exercise.muscle}
+                          </p>
                           <p className="text-[10px] font-semibold text-[#1D4ED8]">
-                            {exercise.sets}x{exercise.reps} • {exercise.weight}kg
+                            {exercise.sets}x{exercise.reps} • {exercise.weight}
+                            kg
                           </p>
                         </div>
                         <div className="flex items-center gap-1">
@@ -730,10 +895,10 @@ export default function TreinoPage() {
                             type="button"
                             onClick={() => moveExercise(exercise.id, "up")}
                             disabled={idx === 0}
-                          className={`h-7 w-7 rounded-md border flex items-center justify-center ${
+                            className={`h-7 w-7 rounded-md border flex items-center justify-center ${
                               idx === 0
                                 ? "border-[#E2E8F0] bg-[#F8FAFF] text-[#94A3B8]"
-                              : "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                                : "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
                             }`}
                           >
                             <ChevronUp size={12} />
@@ -745,7 +910,7 @@ export default function TreinoPage() {
                             className={`h-7 w-7 rounded-md border flex items-center justify-center ${
                               idx === selectedExercises.length - 1
                                 ? "border-[#E2E8F0] bg-[#F8FAFF] text-[#94A3B8]"
-                              : "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                                : "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
                             }`}
                           >
                             <ChevronDown size={12} />
@@ -770,12 +935,16 @@ export default function TreinoPage() {
             <section className="rounded-[22px] border border-[#DBEAFE] bg-white p-3.5 shadow">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles size={14} className="text-[#2563EB]" />
-                <p className="text-[12px] font-black text-[#0F172A]">Resumo final do treino</p>
+                <p className="text-[12px] font-black text-[#0F172A]">
+                  Resumo final do treino
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <div className="rounded-xl bg-[#F8FAFF] border border-[#DBEAFE] px-2.5 py-2">
                   <p className="text-[#64748B] font-semibold">Objetivo</p>
-                  <p className="text-[#1E3A8A] font-black">{selectedGoalLabel}</p>
+                  <p className="text-[#1E3A8A] font-black">
+                    {selectedGoalLabel}
+                  </p>
                 </div>
                 <div className="rounded-xl bg-[#F8FAFF] border border-[#DBEAFE] px-2.5 py-2">
                   <p className="text-[#64748B] font-semibold">Dia</p>
@@ -791,17 +960,27 @@ export default function TreinoPage() {
                 </div>
                 <div className="rounded-xl bg-[#F8FAFF] border border-[#DBEAFE] px-2.5 py-2">
                   <p className="text-[#64748B] font-semibold">Volume</p>
-                  <p className="text-[#1E3A8A] font-black">{daysPerWeek}x / {duration}min</p>
+                  <p className="text-[#1E3A8A] font-black">
+                    {daysPerWeek}x / {duration}min
+                  </p>
                 </div>
                 <div className="rounded-xl bg-[#F8FAFF] border border-[#DBEAFE] px-2.5 py-2 col-span-2">
-                  <p className="text-[#64748B] font-semibold">Exercícios selecionados</p>
+                  <p className="text-[#64748B] font-semibold">
+                    Exercícios selecionados
+                  </p>
                   {selectedExercises.length === 0 ? (
-                    <p className="text-[#64748B] font-black">Nenhum exercício selecionado</p>
+                    <p className="text-[#64748B] font-black">
+                      Nenhum exercício selecionado
+                    </p>
                   ) : (
                     <ul className="mt-1 space-y-1">
                       {selectedExercises.map((exercise, idx) => (
-                        <li key={exercise.id} className="text-[#1E3A8A] font-black">
-                          {idx + 1}. {exercise.name} - {exercise.sets}x{exercise.reps} ({exercise.weight}kg)
+                        <li
+                          key={exercise.id}
+                          className="text-[#1E3A8A] font-black"
+                        >
+                          {idx + 1}. {exercise.name} - {exercise.sets}x
+                          {exercise.reps} ({exercise.weight}kg)
                         </li>
                       ))}
                     </ul>
@@ -818,8 +997,12 @@ export default function TreinoPage() {
           <div className="w-full max-w-[420px] rounded-3xl border border-[#DBEAFE] bg-white p-4 shadow-2xl">
             <div className="mb-3 flex items-center justify-between">
               <div>
-                <p className="text-[10px] uppercase tracking-wide font-bold text-[#64748B]">Configurar exercício</p>
-                <p className="text-[15px] font-black text-[#0F172A]">{pendingExercise.name}</p>
+                <p className="text-[10px] uppercase tracking-wide font-bold text-[#64748B]">
+                  Configurar exercício
+                </p>
+                <p className="text-[15px] font-black text-[#0F172A]">
+                  {pendingExercise.name}
+                </p>
               </div>
               <button
                 type="button"
@@ -832,32 +1015,44 @@ export default function TreinoPage() {
 
             <div className="grid grid-cols-3 gap-2">
               <label className="rounded-xl border border-[#DBEAFE] bg-[#F8FAFF] px-2 py-2">
-                <span className="block text-[10px] font-bold text-[#64748B] mb-1">Séries</span>
+                <span className="block text-[10px] font-bold text-[#64748B] mb-1">
+                  Séries
+                </span>
                 <input
                   type="number"
                   min={1}
                   value={pendingSets}
-                  onChange={(e) => setPendingSets(Math.max(1, Number(e.target.value) || 1))}
+                  onChange={e =>
+                    setPendingSets(Math.max(1, Number(e.target.value) || 1))
+                  }
                   className="w-full rounded-lg border border-[#DBEAFE] bg-white px-2 py-1.5 text-[12px] font-bold text-[#0F172A] outline-none"
                 />
               </label>
               <label className="rounded-xl border border-[#DBEAFE] bg-[#F8FAFF] px-2 py-2">
-                <span className="block text-[10px] font-bold text-[#64748B] mb-1">Repetições</span>
+                <span className="block text-[10px] font-bold text-[#64748B] mb-1">
+                  Repetições
+                </span>
                 <input
                   type="number"
                   min={1}
                   value={pendingReps}
-                  onChange={(e) => setPendingReps(Math.max(1, Number(e.target.value) || 1))}
+                  onChange={e =>
+                    setPendingReps(Math.max(1, Number(e.target.value) || 1))
+                  }
                   className="w-full rounded-lg border border-[#DBEAFE] bg-white px-2 py-1.5 text-[12px] font-bold text-[#0F172A] outline-none"
                 />
               </label>
               <label className="rounded-xl border border-[#DBEAFE] bg-[#F8FAFF] px-2 py-2">
-                <span className="block text-[10px] font-bold text-[#64748B] mb-1">Quilogramas</span>
+                <span className="block text-[10px] font-bold text-[#64748B] mb-1">
+                  Quilogramas
+                </span>
                 <input
                   type="number"
                   min={0}
                   value={pendingWeight}
-                  onChange={(e) => setPendingWeight(Math.max(0, Number(e.target.value) || 0))}
+                  onChange={e =>
+                    setPendingWeight(Math.max(0, Number(e.target.value) || 0))
+                  }
                   className="w-full rounded-lg border border-[#DBEAFE] bg-white px-2 py-1.5 text-[12px] font-bold text-[#0F172A] outline-none"
                 />
               </label>
@@ -903,7 +1098,11 @@ export default function TreinoPage() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="py-3.5 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-black text-[16px] tracking-wide flex items-center justify-center gap-2 transition-all"
+                className={`py-3.5 rounded-2xl text-white font-black text-[16px] tracking-wide flex items-center justify-center gap-2 transition-all ${
+                  colorTheme === "pink"
+                    ? "bg-[#EC4899] hover:bg-[#DB2777]"
+                    : "bg-[#2563EB] hover:bg-[#1D4ED8]"
+                }`}
               >
                 Próximo
                 <ArrowRight size={16} />
@@ -922,7 +1121,11 @@ export default function TreinoPage() {
               <button
                 type="button"
                 onClick={finishAndKeepEditing}
-                className="py-3.5 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-black text-[16px] tracking-wide flex items-center justify-center gap-2 transition-all"
+                className={`py-3.5 rounded-2xl text-white font-black text-[16px] tracking-wide flex items-center justify-center gap-2 transition-all ${
+                  colorTheme === "pink"
+                    ? "bg-[#EC4899] hover:bg-[#DB2777]"
+                    : "bg-[#2563EB] hover:bg-[#1D4ED8]"
+                }`}
               >
                 Montar Treino
                 <Check size={16} />
@@ -934,4 +1137,3 @@ export default function TreinoPage() {
     </div>
   );
 }
-
