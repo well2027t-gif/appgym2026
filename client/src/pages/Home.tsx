@@ -141,21 +141,21 @@ export default function Home() {
         backgroundPosition: "center",
       }}
     >
-      <div className="px-4 max-w-[420px] mx-auto pt-2 pb-[calc(14rem+env(safe-area-inset-bottom))]">
+      <div className="px-4 max-w-[420px] mx-auto pt-1.5 pb-[calc(13rem+env(safe-area-inset-bottom))]">
           {/* Top brand / greeting card */}
           <motion.div
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative mb-2"
+            className="relative mb-1.5"
           >
             <div className="absolute inset-x-6 -top-2 h-6 rounded-full bg-gradient-to-r from-[#DBEAFE] to-transparent blur-xl opacity-70" />
-            <div className="relative flex items-center gap-3.5 rounded-2xl bg-white/95 border border-[#DBEAFE] shadow px-3 py-2.5">
+            <div className="relative flex items-center gap-3 rounded-2xl bg-white/95 border border-[#DBEAFE] shadow px-3 py-2">
               <div className="shrink-0">
-                <div className="w-14 h-14 rounded-full bg-white border border-[#DBEAFE] flex items-center justify-center shadow-md">
+                <div className="w-12 h-12 rounded-full bg-white border border-[#DBEAFE] flex items-center justify-center shadow-md">
                   <img
                     src={profile?.photoDataUrl || DEFAULT_PROFILE_PHOTO}
                     alt="Foto do perfil"
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-10 h-10 rounded-full object-cover"
                   />
                 </div>
               </div>
@@ -163,11 +163,11 @@ export default function Home() {
                 <p className="text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.18em]">
                   Seu coach diário
                 </p>
-                <p className="text-[13px] font-black text-[#0F172A] truncate">
+                <p className="text-[12px] font-black text-[#0F172A] truncate">
                   Bom dia,{" "}
                   {profile?.name && profile.name.trim().length > 0 ? profile.name : "Welington"} 💪
                 </p>
-                <p className="text-[10px] text-[#1E3A8A] mt-1 leading-tight">
+                <p className="text-[9px] text-[#1E3A8A] mt-0.5 leading-tight">
                   <Flame size={12} className="inline-block mr-1 text-[#2563EB]" />
                   Treino de hoje:{" "}
                   <span className="font-bold text-[#1D4ED8] underline decoration-[#1D4ED8]/40">
@@ -191,10 +191,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="mt-2 rounded-3xl overflow-hidden shadow-2xl border border-white/30"
+            className="mt-1.5 rounded-3xl overflow-hidden shadow-2xl border border-white/30"
           >
             <div
-              className="relative h-[76px]"
+              className="relative h-[68px]"
               style={{
                 backgroundImage:
                   colorTheme === "pink"
@@ -204,8 +204,8 @@ export default function Home() {
                 backgroundPosition: "center",
               }}
             >
-              <div className="absolute inset-0 p-3 flex items-end">
-                <p className="text-white text-[15px] font-black leading-snug drop-shadow">
+              <div className="absolute inset-0 p-2.5 flex items-end">
+                <p className="text-white text-[14px] font-black leading-snug drop-shadow">
                   Disciplina
                   <br />
                   constrói resultados.
@@ -214,7 +214,7 @@ export default function Home() {
             </div>
 
             <div
-              className="px-3.5 py-2 text-white"
+              className="px-3 py-1.5 text-white"
               style={{
                 background:
                   colorTheme === "pink"
@@ -251,22 +251,22 @@ export default function Home() {
             transition={{ delay: 0.1 }}
             whileTap={{ scale: 0.99 }}
             onClick={() => setLocation("/conquistas")}
-            className="mt-2 w-full rounded-2xl border border-[#DBEAFE] bg-white/95 p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] text-left"
+            className="mt-1.5 w-full rounded-2xl border border-[#DBEAFE] bg-white/95 p-2 shadow-[0_10px_24px_rgba(37,99,235,0.08)] text-left"
           >
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.18em] font-black text-[#1D4ED8]">
                   Novo painel
                 </p>
-                <p className="text-[14px] font-black text-[#0F172A]">
+                <p className="text-[13px] font-black text-[#0F172A]">
                   Conquistas e recompensas
                 </p>
                 <p className="text-[10px] text-[#64748B] mt-0.5">
                   Metas, desafios, consistência e prêmios reais.
                 </p>
               </div>
-              <div className="h-11 w-11 rounded-xl bg-[#EFF6FF] border border-[#DBEAFE] text-[#1D4ED8] grid place-items-center shrink-0">
-                <Gift size={18} />
+              <div className="h-10 w-10 rounded-xl bg-[#EFF6FF] border border-[#DBEAFE] text-[#1D4ED8] grid place-items-center shrink-0">
+                <Gift size={16} />
               </div>
             </div>
           </motion.button>
@@ -279,7 +279,7 @@ export default function Home() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setLocation(`/workout/${nextWorkoutDay.id}`)}
-            className="mt-2 w-full py-2.5 rounded-full text-white font-black tracking-wide text-[14px] transition-all"
+            className="mt-1.5 w-full py-2 rounded-full text-white font-black tracking-wide text-[13px] transition-all"
             style={{
               background:
                 colorTheme === "pink"
@@ -299,10 +299,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.18 }}
-            className="mt-2 bg-white/90 backdrop-blur-md rounded-3xl px-3.5 pt-2 pb-2 border border-[#DBEAFE] shadow-[0_12px_26px_rgba(37,99,235,0.12)] overflow-hidden relative"
+            className="mt-1.5 bg-white/90 backdrop-blur-md rounded-3xl px-3 pt-1.5 pb-1.5 border border-[#DBEAFE] shadow-[0_12px_26px_rgba(37,99,235,0.12)] overflow-hidden relative"
           >
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#93C5FD] via-[#2563EB] to-[#1D4ED8]" />
-            <div className="mb-2 flex items-center justify-between">
+            <div className="mb-1.5 flex items-center justify-between">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1D4ED8]">
                 Semana
               </p>
@@ -310,7 +310,7 @@ export default function Home() {
                 toque no dia
               </span>
             </div>
-            <div className="grid grid-cols-7 gap-1.5">
+            <div className="grid grid-cols-7 gap-1">
               {[1, 2, 3, 4, 5, 6, 0].map(dow => {
                 const day = orderedDays.find(d => d.dayOfWeek === dow);
                 if (!day) return <div key={dow} />;
@@ -320,19 +320,19 @@ export default function Home() {
                   <button
                     key={dow}
                     onClick={() => setLocation(`/workout/${day.id}`)}
-                    className={`flex min-h-[42px] flex-col items-center justify-center rounded-2xl border px-1 py-1 transition-all ${
+                    className={`flex min-h-[38px] flex-col items-center justify-center rounded-2xl border px-1 py-0.5 transition-all ${
                       active
                         ? "border-[#93C5FD] bg-[#EFF6FF]"
                         : "border-[#DBEAFE] bg-white/70 hover:bg-white"
                     }`}
                   >
                     <span
-                      className={`text-[9px] font-black ${active ? "text-[#1D4ED8]" : "text-[#1E3A8A]"}`}
+                      className={`text-[8px] font-black ${active ? "text-[#1D4ED8]" : "text-[#1E3A8A]"}`}
                     >
                       {getShortDowLabel(dow)}
                     </span>
                     <span
-                      className={`text-[12px] font-black leading-none ${active ? "text-[#0F172A]" : "text-[#334155]"}`}
+                      className={`text-[11px] font-black leading-none ${active ? "text-[#0F172A]" : "text-[#334155]"}`}
                     >
                       {weekDateByDow[dow]}
                     </span>
@@ -347,11 +347,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.24 }}
-            className="mt-2"
+            className="mt-1.5"
           >
-            <div className="mb-2 flex items-end justify-between">
+            <div className="mb-1.5 flex items-end justify-between">
               <div>
-                <p className="text-[15px] font-black text-[#0F172A]">Sua Evolução</p>
+                <p className="text-[14px] font-black text-[#0F172A]">Sua Evolução</p>
                 <p className="text-[10px] text-[#64748B]">Indicadores principais</p>
               </div>
               <span className="rounded-full border border-[#DBEAFE] bg-white/80 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-[#1D4ED8]">
@@ -359,48 +359,48 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-1.5">
-              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[108px]">
-                <div className="mb-2 flex items-center justify-between">
+            <div className="grid grid-cols-3 gap-1">
+              <div className="rounded-[20px] border border-[#DBEAFE] bg-white p-2 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[98px]">
+                <div className="mb-1.5 flex items-center justify-between">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
                     Peso Atual
                   </span>
                   <Scale size={14} className="text-[#1D4ED8]" />
                 </div>
-                <p className="text-[32px] leading-none font-black text-[#0F172A]">
+                <p className="text-[28px] leading-none font-black text-[#0F172A]">
                   {profile?.weight && profile.weight > 0 ? profile.weight : 94}
                 </p>
                 <p className="text-[11px] font-bold text-[#1E3A8A]">kg</p>
-                <div className="mt-2 inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-600">
+                <div className="mt-1.5 inline-flex items-center rounded-full bg-emerald-50 px-1.5 py-0.5 text-[9px] font-black text-emerald-600">
                   +2 kg no mês
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[108px]">
-                <div className="mb-2 flex items-center justify-between">
+              <div className="rounded-[20px] border border-[#DBEAFE] bg-white p-2 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[98px]">
+                <div className="mb-1.5 flex items-center justify-between">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
                     Treinos
                   </span>
                   <Dumbbell size={14} className="text-[#1D4ED8]" />
                 </div>
-                <p className="text-[32px] leading-none font-black text-[#0F172A] text-center mt-1">
+                <p className="text-[28px] leading-none font-black text-[#0F172A] text-center mt-0.5">
                   {new Set(logs.map(l => l.date)).size}
                 </p>
-                <p className="text-[11px] font-bold text-[#1E3A8A] text-center mt-1">Concluídos</p>
-                <div className="mt-2 text-[10px] text-[#64748B] font-semibold text-center">
+                <p className="text-[10px] font-bold text-[#1E3A8A] text-center mt-0.5">Concluídos</p>
+                <div className="mt-1 text-[9px] text-[#64748B] font-semibold text-center">
                   consistência
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[108px]">
-                <div className="mb-2 flex items-center justify-between">
+              <div className="rounded-[20px] border border-[#DBEAFE] bg-white p-2 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[98px]">
+                <div className="mb-1.5 flex items-center justify-between">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
                     Última Foto
                   </span>
                   <ImageIcon size={14} className="text-[#1D4ED8]" />
                 </div>
                 <div
-                  className="h-[62px] w-full rounded-[16px] border border-[#DBEAFE] overflow-hidden"
+                  className="h-[52px] w-full rounded-[14px] border border-[#DBEAFE] overflow-hidden"
                   style={{
                     backgroundImage: `url(${latestProgressPhoto})`,
                     backgroundSize: "cover",
