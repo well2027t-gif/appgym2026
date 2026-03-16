@@ -32,9 +32,9 @@ export function ThemeProvider({
     return defaultTheme;
   });
   const [colorTheme, setColorTheme] = useState<ColorTheme>(() => {
-    if (typeof window === "undefined") return "pink";
+    if (typeof window === "undefined") return "blue";
     const stored = window.localStorage.getItem("app_color_theme");
-    return stored === "blue" || stored === "pink" ? stored : "pink";
+    return stored === "blue" || stored === "pink" ? stored : "blue";
   });
 
   useEffect(() => {
