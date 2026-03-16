@@ -269,23 +269,50 @@ export default function Home() {
 
               {/* Bottom text */}
               <div className="absolute inset-x-3 bottom-3">
-                <p className="text-[11px] font-bold text-white/70 uppercase tracking-[0.18em] leading-none mb-1">
+                <p className="text-[10px] font-semibold text-white/60 uppercase tracking-[0.22em] leading-none mb-1">
                   Disciplina constrói resultados
                 </p>
-                <p className="text-[18px] font-black text-white leading-tight drop-shadow-lg">
+                <p className="text-[20px] font-black text-white leading-tight drop-shadow-lg">
                   {headlineWorkoutName}
                 </p>
-                {/* Stats pills row */}
-                <div className="mt-2 flex items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/15 border border-white/20 px-2 py-0.5 text-[9px] font-bold text-white backdrop-blur-sm">
-                    <Flame size={9} className="text-[#FBBF24]" /> {stats.workoutDaysInWeek}x/sem
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/15 border border-white/20 px-2 py-0.5 text-[9px] font-bold text-white backdrop-blur-sm">
-                    <Bolt size={9} className="text-[#93C5FD]" /> {stats.totalMinutes} min
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/15 border border-white/20 px-2 py-0.5 text-[9px] font-bold text-white backdrop-blur-sm">
-                    <Trophy size={9} className="text-[#FCD34D]" /> {completedTrainingsCount} treinos
-                  </span>
+                {/* Bottom row: streak + week dots */}
+                <div className="mt-2 flex items-center justify-between gap-2">
+                  {/* Streak counter */}
+                  <div className="flex items-center gap-1.5">
+                    <Flame size={14} className="text-[#FBBF24] drop-shadow" />
+                    <div>
+                      <p className="text-[16px] font-black text-white leading-none">
+                        {stats.streak}
+                      </p>
+                      <p className="text-[8px] font-semibold text-white/60 leading-none">dias seguidos</p>
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="w-px h-7 bg-white/20" />
+
+                  {/* Week dots */}
+                  <div className="flex flex-col items-end gap-0.5">
+                    <div className="flex items-center gap-1">
+                      {[1,2,3,4,5,6,7].map(i => (
+                        <span
+                          key={i}
+                          className="h-2 w-2 rounded-full"
+                          style={{
+                            background: i <= Math.min(completedTrainingsCount, stats.workoutDaysInWeek)
+                              ? colorTheme === "pink" ? "#F472B6" : "#60A5FA"
+                              : "rgba(255,255,255,0.20)",
+                            boxShadow: i <= Math.min(completedTrainingsCount, stats.workoutDaysInWeek)
+                              ? colorTheme === "pink" ? "0 0 4px #F472B6" : "0 0 4px #60A5FA"
+                              : "none",
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-[8px] font-semibold text-white/60">
+                      {Math.min(completedTrainingsCount, stats.workoutDaysInWeek)}/7 treinos na semana
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
