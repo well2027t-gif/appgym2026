@@ -233,75 +233,60 @@ export default function Home() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="mt-1.5 rounded-3xl overflow-hidden border border-white/40 shadow-[0_14px_28px_rgba(15,23,42,0.22)]"
+            className="mt-1.5 rounded-3xl overflow-hidden shadow-[0_16px_32px_rgba(15,23,42,0.28)]"
           >
             <div
-              className="relative h-[88px]"
+              className="relative h-[138px]"
               style={{
-                backgroundImage:
-                  colorTheme === "pink"
-                    ? `linear-gradient(135deg, rgba(15,23,42,0.70), rgba(236,72,153,0.40)), url(${HERO_BG})`
-                    : `linear-gradient(135deg, rgba(15,23,42,0.70), rgba(37,99,235,0.40)), url(${HERO_BG})`,
+                backgroundImage: `url(${HERO_BG})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center 35%",
               }}
             >
-              <div className="absolute inset-0">
-                <div className="absolute -left-6 -top-10 h-24 w-24 rounded-full bg-white/15 blur-2xl" />
-                <div className="absolute right-3 top-3 rounded-full border border-white/40 bg-white/20 px-2 py-0.5 text-[9px] font-black text-white backdrop-blur">
-                  PLANO DO DIA
-                </div>
-                <div className="absolute inset-x-3 bottom-2.5 flex items-end justify-between gap-2">
-                  <div>
-                    <p className="text-white text-[13px] font-black leading-snug drop-shadow">
-                      Disciplina constrói resultados
-                    </p>
-                    <p className="mt-1 text-[9px] font-semibold text-white/90 drop-shadow-sm">
-                      Hoje: <span className="underline decoration-white/40">{headlineWorkoutName}</span>
-                    </p>
-                  </div>
-                  <div className="hidden xs:flex flex-col items-end gap-1 text-[9px] text-white/90">
-                    <div className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 border border-white/25">
-                      <Flame size={11} className="text-[#FBBF24]" />
-                      <span className="font-bold">{stats.workoutDaysInWeek}x / semana</span>
-                    </div>
-                    <div className="inline-flex items-center gap-1 rounded-full bg-black/25 px-2 py-0.5 border border-white/10">
-                      <Trophy size={11} className="text-[#BFDBFE]" />
-                      <span className="font-semibold">{stats.streak} dias de sequência</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              {/* Bottom-to-top gradient for text legibility */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    colorTheme === "pink"
+                      ? "linear-gradient(to top, rgba(120,10,60,0.92) 0%, rgba(15,23,42,0.55) 55%, rgba(0,0,0,0.15) 100%)"
+                      : "linear-gradient(to top, rgba(10,20,70,0.92) 0%, rgba(15,23,42,0.55) 55%, rgba(0,0,0,0.15) 100%)",
+                }}
+              />
+              {/* Glow blob */}
+              <div className="absolute -left-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-3xl" />
 
-            <div
-              className="px-3 py-2 text-white"
-              style={{
-                background:
-                  colorTheme === "pink"
-                    ? "linear-gradient(135deg, rgba(15,23,42,0.96), rgba(157,23,77,0.95))"
-                    : "linear-gradient(135deg, rgba(15,23,42,0.96), rgba(30,64,175,0.92))",
-              }}
-            >
-              <div className="flex items-center justify-between text-[10px] font-bold">
-                <div className="flex items-center gap-1.5">
-                  <Flame size={14} className="text-[#FCD34D]" />
-                  <span>
-                    <span className="font-black">{stats.workoutDaysInWeek}</span> Treinos na Semana
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Bolt size={14} className="text-[#60A5FA]" />
-                  <span>
-                    <span className="font-black">{stats.totalMinutes}</span> Min Treinados
-                  </span>
-                </div>
-              </div>
-              <div className="mt-1.5 flex items-center justify-center gap-2 text-[10px] font-bold text-white/90">
-                <Trophy size={14} className="text-[#93C5FD]" />
-                <span>
-                  Sequência: <span className="font-black">{stats.streak}</span> Dias
+              {/* Top row: date badge + streak */}
+              <div className="absolute inset-x-3 top-3 flex items-center justify-between">
+                <span className="inline-flex items-center gap-1 rounded-full border border-white/30 bg-black/30 px-2.5 py-0.5 text-[9px] font-black text-white backdrop-blur-sm">
+                  📅 {new Date().toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "short" }).toUpperCase()}
                 </span>
+                <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/15 px-2.5 py-0.5 text-[9px] font-black text-white backdrop-blur-sm">
+                  <Flame size={10} className="text-[#FBBF24]" />
+                  {stats.streak} dias 🔥
+                </span>
+              </div>
+
+              {/* Bottom text */}
+              <div className="absolute inset-x-3 bottom-3">
+                <p className="text-[11px] font-bold text-white/70 uppercase tracking-[0.18em] leading-none mb-1">
+                  Disciplina constrói resultados
+                </p>
+                <p className="text-[18px] font-black text-white leading-tight drop-shadow-lg">
+                  {headlineWorkoutName}
+                </p>
+                {/* Stats pills row */}
+                <div className="mt-2 flex items-center gap-1.5">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/15 border border-white/20 px-2 py-0.5 text-[9px] font-bold text-white backdrop-blur-sm">
+                    <Flame size={9} className="text-[#FBBF24]" /> {stats.workoutDaysInWeek}x/sem
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/15 border border-white/20 px-2 py-0.5 text-[9px] font-bold text-white backdrop-blur-sm">
+                    <Bolt size={9} className="text-[#93C5FD]" /> {stats.totalMinutes} min
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/15 border border-white/20 px-2 py-0.5 text-[9px] font-bold text-white backdrop-blur-sm">
+                    <Trophy size={9} className="text-[#FCD34D]" /> {completedTrainingsCount} treinos
+                  </span>
+                </div>
               </div>
             </div>
           </motion.div>
