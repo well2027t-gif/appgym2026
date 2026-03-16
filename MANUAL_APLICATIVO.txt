@@ -1,0 +1,194 @@
+MANUAL DO APLICATIVO - GYM TRACKER (APPGYM2026)
+Versao: 1.0 (manual inicial)
+Projeto: appgym2026
+
+==================================================
+1) OBJETIVO DO APP
+==================================================
+O app foi criado para ajudar o usuario a:
+- Organizar treinos por dia
+- Personalizar treino por etapas
+- Acompanhar progresso
+- Salvar perfil e fotos de evolucao
+- Usar tema visual (azul/rosa)
+
+O foco atual e uso mobile-first (navegador do celular), com preparacao para virar app nativo no futuro.
+
+
+==================================================
+2) O QUE JA FOI FEITO NO PROJETO
+==================================================
+2.1 Estrutura principal
+- Tela Home com cards e resumo rapido
+- Tela Treino (wizard de personalizacao por etapas)
+- Tela Progresso (historico e visualizacao de evolucao)
+- Tela Perfil (dados, foto, tema e fotos de progresso)
+- Barra de navegacao inferior (Home, Treinos, Progresso, Perfil)
+
+2.2 Tema visual
+- Tema azul (padrao inicial ao abrir o app)
+- Tema rosa (alternativo)
+- Troca de tema dentro do Perfil
+- Persistencia do tema no navegador (localStorage)
+
+2.3 Treino personalizado (wizard)
+- Fluxo por etapas:
+  1. Objetivo
+  2. Dia
+  3. Nivel
+  4. Dias por semana
+  5. Divisao
+  6. Duracao
+  7. Exercicios
+  8. Resumo
+- Configuracao de exercicio com:
+  - Series
+  - Repeticoes
+  - Quilogramas
+- Salvamento de treinos por dia
+- Exclusao de treino do dia selecionado
+
+2.4 Perfil
+- Dados pessoais basicos
+- Foto de perfil
+- Fotos de progresso
+- Definicao de meta/foco
+- Seletor de cor do tema (azul/rosa)
+
+2.5 Progresso
+- Historico de treinos
+- Indicadores principais
+- Visualizacao de evolucao por exercicio
+
+2.6 Ajustes mobile
+- Melhorias de safe-area para iPhone
+- Ajustes de altura/espacamento para reduzir corte em tela pequena
+- Ajustes para reduzir sobreposicao com barra inferior
+
+
+==================================================
+3) COMO USAR O APP (PASSO A PASSO)
+==================================================
+3.1 Home
+- Abra o app
+- Veja o card com treino do dia
+- Toque em "INICIAR TREINO" para abrir treino do dia
+- Use a barra inferior para navegar
+
+3.2 Treinos (Personalizar Treino)
+- Toque em "Treinos" na barra inferior
+- Siga as etapas do wizard
+- Adicione exercicios e configure series/repeticoes/peso
+- Finalize em "Montar Treino"
+
+3.3 Progresso
+- Toque em "Progresso"
+- Selecione exercicio
+- Consulte historico/indicadores
+
+3.4 Perfil
+- Toque em "Perfil"
+- Atualize foto e dados
+- Ajuste meta/foco
+- Troque o tema (azul/rosa)
+- Salve o perfil
+
+
+==================================================
+4) ARMAZENAMENTO DE DADOS (ATUAL)
+==================================================
+Atualmente os dados ficam no navegador (localStorage), por exemplo:
+- Perfil do usuario
+- Configuracoes do wizard de treino
+- Treinos personalizados por dia
+
+Importante:
+- Se limpar dados do navegador, os dados podem ser perdidos.
+- Em producao futura, recomendado migrar para backend/database.
+
+
+==================================================
+5) USO NO CELULAR (IPHONE E ANDROID)
+==================================================
+5.1 iPhone (Safari / Chrome)
+- Abra o link publicado (Vercel)
+- Atualize com recarregamento completo quando houver nova versao
+- Se notar corte visual, fazer refresh e testar novamente
+
+5.2 Android (Chrome)
+- Abra o link publicado
+- Comportamento semelhante ao iPhone
+- Pode adicionar atalho na tela inicial
+
+5.3 Observacao geral
+- O projeto foi otimizado para visual mobile
+- Pode haver diferenca pequena entre navegadores devido ao viewport dinamico
+
+
+==================================================
+6) COMO PUBLICAR NOVAS ATUALIZACOES
+==================================================
+Fluxo usado no projeto:
+1. Ajustar codigo local
+2. Commit
+3. Push para GitHub (branch main)
+4. Vercel faz deploy automatico
+
+Comandos principais:
+git add .
+git commit -m "mensagem"
+git push
+
+
+==================================================
+7) ROTEIRO PARA VIRAR APP (IPHONE E ANDROID)
+==================================================
+Para transformar em app de loja (App Store / Play Store), recomendacao:
+
+Fase 1 - Estabilizacao web mobile
+- Fechar ajustes de responsividade
+- Reduzir regressao visual entre telas
+- Garantir fluxo de treino sem corte
+
+Fase 2 - Persistencia em nuvem
+- Backend para login, perfil, treinos e progresso
+- Banco de dados
+- Sincronizacao de dados entre dispositivos
+
+Fase 3 - Empacotar para mobile
+Opcoes:
+- Capacitor (mantem base web e gera app iOS/Android)
+- React Native (migracao para nativo)
+
+Fase 4 - Publicacao
+- Android: Google Play Console
+- iOS: Apple Developer + App Store Connect
+- Politica de privacidade e termos
+
+
+==================================================
+8) CHECKLIST DE QUALIDADE (RECOMENDADO)
+==================================================
+- Testar Home em iPhone e Android
+- Testar Wizard completo do treino
+- Testar troca de tema azul/rosa
+- Testar criacao/remocao de exercicios
+- Testar Perfil com foto e salvamento
+- Testar Progresso sem dados e com dados
+- Testar barra inferior em telas pequenas
+
+
+==================================================
+9) RESUMO FINAL
+==================================================
+O app ja tem base forte para:
+- uso real de treino diario
+- personalizacao
+- evolucao visual
+- expansao para app nativo no futuro
+
+Proximo passo ideal:
+- consolidar UX mobile
+- conectar backend
+- iniciar empacotamento para iPhone/Android
+

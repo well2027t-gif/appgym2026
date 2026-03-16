@@ -2,6 +2,9 @@ import { ArrowLeft, Camera, ImagePlus, Save, Trash2, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { hasFirebaseConfig } from "@/lib/firebase";
+import { uploadProgressPhoto, type ProgressView } from "@/lib/professionalServices";
 import { useTheme } from "@/contexts/ThemeContext";
 
 type UserProfile = {
@@ -20,6 +23,7 @@ const MAX_PROGRESS_PHOTOS = 8;
 
 export default function ProfilePage() {
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
   const { colorTheme, setColorTheme } = useTheme();
   const [profile, setProfile] = useState<UserProfile>({
     name: "",
@@ -55,7 +59,9 @@ export default function ProfilePage() {
         goal: parsed.goal ?? "",
         city: parsed.city ?? "",
         photoDataUrl: typeof parsed.photoDataUrl === "string" ? parsed.photoDataUrl : "",
-        progressPhotos: Array.isArray(parsed.progressPhotos) ? parsed.progressPhotos.slice(0, MAX_PROGRESS_PHOTOS) : [],
+        progressPhotos: Array.isArray(parsed.progressPhotos)
+          ? parsed.progressPhotos.slice(0, MAX_PROGRESS_PHOTOS)
+          : [],
       });
     } catch {
       // ignore invalid data
@@ -63,7 +69,7 @@ export default function ProfilePage() {
   }, []);
 
   function handleChange<K extends keyof UserProfile>(key: K, value: UserProfile[K]) {
-    setProfile((prev) => ({ ...prev, [key]: value }));
+    setProfile(prev => ({ ...prev, [key]: value }));
   }
 
   function handleSave() {
@@ -94,7 +100,9 @@ export default function ProfilePage() {
     try {
       const dataUrl = await resizeImageToDataUrl(file, 280, 0.82);
       handleChange("photoDataUrl", dataUrl);
-      toast("Foto atualizada", { description: "Agora salve o perfil para aplicar na tela inicial." });
+      toast("Foto atualizada", {
+        description: "Agora salve o perfil para aplicar na tela inicial.",
+      });
     } catch {
       toast("Erro ao processar foto", { description: "Tente novamente com outra imagem." });
     }
@@ -109,10 +117,19 @@ export default function ProfilePage() {
 
     try {
       const dataUrl = await resizeImageToDataUrl(file, 900, 0.84);
-      setProfile((prev) => ({
+      setProfile(prev => ({
         ...prev,
         progressPhotos: [dataUrl, ...prev.progressPhotos].slice(0, MAX_PROGRESS_PHOTOS),
       }));
+      if (hasFirebaseConfig && user) {
+        const cycle: ProgressView[] = ["front", "side", "back"];
+        const view = cycle[profile.progressPhotos.length % 3];
+        await uploadProgressPhoto({
+          userId: user.uid,
+          file,
+          view,
+        });
+      }
       toast("Foto adicionada", { description: "Sua foto de progresso foi atualizada." });
     } catch {
       toast("Erro ao processar foto", { description: "Tente novamente com outra imagem." });
@@ -120,7 +137,7 @@ export default function ProfilePage() {
   }
 
   function removeProgressPhoto(index: number) {
-    setProfile((prev) => ({
+    setProfile(prev => ({
       ...prev,
       progressPhotos: prev.progressPhotos.filter((_, i) => i !== index),
     }));
@@ -129,8 +146,10 @@ export default function ProfilePage() {
   function setProgressAsProfile(index: number) {
     const selected = profile.progressPhotos[index];
     if (!selected) return;
-    setProfile((prev) => ({ ...prev, photoDataUrl: selected }));
-    toast("Foto de perfil atualizada", { description: "A foto escolhida agora aparece na tela inicial." });
+    setProfile(prev => ({ ...prev, photoDataUrl: selected }));
+    toast("Foto de perfil atualizada", {
+      description: "A foto escolhida agora aparece na tela inicial.",
+    });
   }
 
   return (
@@ -158,13 +177,19 @@ export default function ProfilePage() {
           <div className="flex items-center gap-4">
             <div className="h-16 w-16 rounded-full border border-[#DBEAFE] bg-[#EFF6FF] overflow-hidden flex items-center justify-center shadow-sm">
               {profile.photoDataUrl ? (
-                <img src={profile.photoDataUrl} alt="Foto de perfil" className="h-full w-full object-cover" />
+                <img
+                  src={profile.photoDataUrl}
+                  alt="Foto de perfil"
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 <User size={24} className="text-[#93A8C7]" />
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] text-[#64748B] uppercase tracking-widest font-bold">Seu Perfil</p>
+              <p className="text-[11px] text-[#64748B] uppercase tracking-widest font-bold">
+                Seu Perfil
+              </p>
               <p className="text-lg font-black truncate">{profile.name || "Welington"}</p>
               <p className="text-[11px] text-[#64748B] truncate">
                 {profile.goal || "Defina seu objetivo para evoluir."}
@@ -175,7 +200,7 @@ export default function ProfilePage() {
 
         <form
           className="bg-white/80 rounded-3xl p-6 border border-white/60 shadow-lg space-y-4"
-          onSubmit={(e) => {
+          onSubmit={e => {
             e.preventDefault();
             handleSave();
           }}
@@ -187,7 +212,11 @@ export default function ProfilePage() {
             <div className="flex items-center gap-3">
               <div className="h-16 w-16 rounded-full border border-[#DBEAFE] bg-[#EFF6FF] overflow-hidden flex items-center justify-center">
                 {profile.photoDataUrl ? (
-                  <img src={profile.photoDataUrl} alt="Foto de perfil" className="h-full w-full object-cover" />
+                  <img
+                    src={profile.photoDataUrl}
+                    alt="Foto de perfil"
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   <User size={24} className="text-[#93A8C7]" />
                 )}
@@ -200,7 +229,7 @@ export default function ProfilePage() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => handlePhotoSelect(e.target.files?.[0] ?? null)}
+                    onChange={e => handlePhotoSelect(e.target.files?.[0] ?? null)}
                   />
                 </label>
                 {profile.photoDataUrl && (
@@ -219,8 +248,8 @@ export default function ProfilePage() {
 
           <div className="flex items-center justify-between gap-3">
             <p className="text-[11px] text-[#64748B]">
-              <span className="font-semibold text-[#0F172A]">Mudar cor do app</span>{" "}
-              · toque em uma cor para trocar o tema.
+              <span className="font-semibold text-[#0F172A]">Mudar cor do app</span> · toque em uma
+              cor para trocar o tema.
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -253,7 +282,7 @@ export default function ProfilePage() {
             <input
               type="text"
               value={profile.name}
-              onChange={(e) => handleChange("name", e.target.value)}
+              onChange={e => handleChange("name", e.target.value)}
               className="w-full rounded-xl border border-[#DBEAFE] bg-white px-3 py-2 text-sm outline-none focus:border-[#2563EB]"
               placeholder="Como você quer ser chamada no app"
             />
@@ -268,7 +297,9 @@ export default function ProfilePage() {
                 type="number"
                 min={0}
                 value={profile.weight}
-                onChange={(e) => handleChange("weight", e.target.value === "" ? "" : Number(e.target.value))}
+                onChange={e =>
+                  handleChange("weight", e.target.value === "" ? "" : Number(e.target.value))
+                }
                 className="w-full rounded-xl border border-[#DBEAFE] bg-white px-3 py-2 text-sm outline-none focus:border-[#2563EB]"
                 placeholder="94"
               />
@@ -281,7 +312,9 @@ export default function ProfilePage() {
                 type="number"
                 min={0}
                 value={profile.height}
-                onChange={(e) => handleChange("height", e.target.value === "" ? "" : Number(e.target.value))}
+                onChange={e =>
+                  handleChange("height", e.target.value === "" ? "" : Number(e.target.value))
+                }
                 className="w-full rounded-xl border border-[#DBEAFE] bg-white px-3 py-2 text-sm outline-none focus:border-[#2563EB]"
                 placeholder="176"
               />
@@ -294,7 +327,9 @@ export default function ProfilePage() {
                 type="number"
                 min={0}
                 value={profile.age}
-                onChange={(e) => handleChange("age", e.target.value === "" ? "" : Number(e.target.value))}
+                onChange={e =>
+                  handleChange("age", e.target.value === "" ? "" : Number(e.target.value))
+                }
                 className="w-full rounded-xl border border-[#DBEAFE] bg-white px-3 py-2 text-sm outline-none focus:border-[#2563EB]"
                 placeholder="30"
               />
@@ -308,7 +343,7 @@ export default function ProfilePage() {
             <input
               type="text"
               value={profile.city}
-              onChange={(e) => handleChange("city", e.target.value)}
+              onChange={e => handleChange("city", e.target.value)}
               className="w-full rounded-xl border border-[#DBEAFE] bg-white px-3 py-2 text-sm outline-none focus:border-[#2563EB]"
               placeholder="Sua cidade"
             />
@@ -320,7 +355,7 @@ export default function ProfilePage() {
             </label>
             <textarea
               value={profile.goal}
-              onChange={(e) => handleChange("goal", e.target.value)}
+              onChange={e => handleChange("goal", e.target.value)}
               className="w-full rounded-xl border border-[#DBEAFE] bg-white px-3 py-2 text-sm outline-none focus:border-[#2563EB] min-h-[80px] resize-none"
               placeholder="Ex: Ganho de glúteo e pernas, definição de abdômen..."
             />
@@ -338,8 +373,12 @@ export default function ProfilePage() {
         <section className="bg-white/80 rounded-3xl p-6 border border-white/60 shadow-lg space-y-3">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-bold text-[#64748B] uppercase tracking-widest">Fotos de progresso</p>
-              <p className="text-xs text-[#93A8C7] mt-1">Adicione novas fotos para acompanhar evolução.</p>
+              <p className="text-xs font-bold text-[#64748B] uppercase tracking-widest">
+                Fotos de progresso
+              </p>
+              <p className="text-xs text-[#93A8C7] mt-1">
+                Adicione novas fotos para acompanhar evolução.
+              </p>
             </div>
             <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-[#DBEAFE] bg-white px-3 py-2 text-xs font-bold text-[#1E3A8A] hover:bg-[#EFF6FF] transition-colors shrink-0">
               <ImagePlus size={14} />
@@ -348,7 +387,7 @@ export default function ProfilePage() {
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => handleProgressPhotoSelect(e.target.files?.[0] ?? null)}
+                onChange={e => handleProgressPhotoSelect(e.target.files?.[0] ?? null)}
               />
             </label>
           </div>
@@ -362,7 +401,11 @@ export default function ProfilePage() {
               {profile.progressPhotos.map((photo, idx) => (
                 <div key={`${photo.slice(0, 30)}-${idx}`} className="relative group">
                   <div className="aspect-[3/4] rounded-2xl overflow-hidden border border-[#DBEAFE] bg-white">
-                    <img src={photo} alt={`Foto de progresso ${idx + 1}`} className="h-full w-full object-cover" />
+                    <img
+                      src={photo}
+                      alt={`Foto de progresso ${idx + 1}`}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                   <div className="absolute inset-x-1 bottom-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
@@ -414,4 +457,3 @@ function resizeImageToDataUrl(file: File, maxSize: number, quality: number): Pro
     reader.readAsDataURL(file);
   });
 }
-

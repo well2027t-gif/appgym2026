@@ -38,7 +38,7 @@ export default function WorkoutPage() {
   const { dayId } = useParams<{ dayId: string }>();
   const [, setLocation] = useLocation();
 
-  const day = defaultWorkoutProgram.find((d) => d.id === dayId);
+  const day = defaultWorkoutProgram.find(d => d.id === dayId);
   const todayISO = getTodayISO();
   const alreadyCompleted = day ? isWorkoutCompleted(day.id, todayISO) : false;
 
@@ -69,51 +69,47 @@ export default function WorkoutPage() {
 
   const totalSets = exerciseStates.reduce((a, e) => a + e.sets.length, 0);
   const completedSets = exerciseStates.reduce(
-    (a, e) => a + e.sets.filter((s) => s.completed).length,
-    0
+    (a, e) => a + e.sets.filter(s => s.completed).length,
+    0,
   );
   const progress = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
 
   function toggleExpand(exerciseId: string) {
-    setExerciseStates((prev) =>
-      prev.map((e) =>
-        e.exerciseId === exerciseId ? { ...e, expanded: !e.expanded } : e
-      )
+    setExerciseStates(prev =>
+      prev.map(e => (e.exerciseId === exerciseId ? { ...e, expanded: !e.expanded } : e)),
     );
   }
 
   function updateSet(exerciseId: string, setIdx: number, field: "reps" | "weight", value: string) {
     const numValue = parseFloat(value) || 0;
-    setExerciseStates((prev) =>
-      prev.map((e) => {
+    setExerciseStates(prev =>
+      prev.map(e => {
         if (e.exerciseId !== exerciseId) return e;
         const newSets = e.sets.map((s, i) => {
           if (i !== setIdx) return s;
           return { ...s, [field]: Math.max(0, numValue) };
         });
         return { ...e, sets: newSets };
-      })
+      }),
     );
   }
 
   function toggleSetComplete(exerciseId: string, setIdx: number) {
-    setExerciseStates((prev) =>
-      prev.map((e) => {
+    setExerciseStates(prev =>
+      prev.map(e => {
         if (e.exerciseId !== exerciseId) return e;
         const newSets = e.sets.map((s, i) =>
-          i === setIdx ? { ...s, completed: !s.completed } : s
+          i === setIdx ? { ...s, completed: !s.completed } : s,
         );
         return { ...e, sets: newSets };
-      })
+      }),
     );
   }
 
   function finishWorkout() {
     if (!day) return;
     // Verifica se existe pelo menos uma série concluída antes de finalizar
-    const hasAnyCompletedSet = exerciseStates.some((es) =>
-      es.sets.some((s) => s.completed)
-    );
+    const hasAnyCompletedSet = exerciseStates.some(es => es.sets.some(s => s.completed));
 
     if (!hasAnyCompletedSet) {
       toast("Nenhuma série concluída", {
@@ -122,13 +118,13 @@ export default function WorkoutPage() {
       return;
     }
 
-    exerciseStates.forEach((es) => {
-      const exercise = day.exercises.find((ex) => ex.id === es.exerciseId);
+    exerciseStates.forEach(es => {
+      const exercise = day.exercises.find(ex => ex.id === es.exerciseId);
       if (!exercise) return;
-      const completedSetsList = es.sets.filter((s) => s.completed);
+      const completedSetsList = es.sets.filter(s => s.completed);
       if (completedSetsList.length === 0) return;
       const totalVolume = completedSetsList.reduce((a, s) => a + s.reps * s.weight, 0);
-      const maxWeight = Math.max(...completedSetsList.map((s) => s.weight));
+      const maxWeight = Math.max(...completedSetsList.map(s => s.weight));
       const entry: ProgressEntry = {
         date: todayISO,
         exerciseId: es.exerciseId,
@@ -147,7 +143,7 @@ export default function WorkoutPage() {
   // Get next workout day
   const getNextWorkoutDay = () => {
     if (!day) return null;
-    const currentIndex = defaultWorkoutProgram.findIndex((d) => d.id === dayId);
+    const currentIndex = defaultWorkoutProgram.findIndex(d => d.id === dayId);
     const nextIndex = (currentIndex + 1) % defaultWorkoutProgram.length;
     return defaultWorkoutProgram[nextIndex];
   };
@@ -163,14 +159,16 @@ export default function WorkoutPage() {
 
     return (
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {confettiPieces.map((piece) => (
+        {confettiPieces.map(piece => (
           <motion.div
             key={piece.id}
             className="absolute w-2 h-2 rounded-full"
             style={{
               left: `${piece.left}%`,
               top: "-10px",
-              backgroundColor: ["#2563EB", "#1D4ED8", "#EEF5FF", "#64748B"][Math.floor(Math.random() * 4)],
+              backgroundColor: ["#2563EB", "#1D4ED8", "#EEF5FF", "#64748B"][
+                Math.floor(Math.random() * 4)
+              ],
             }}
             animate={{
               y: window.innerHeight + 20,
@@ -226,7 +224,8 @@ export default function WorkoutPage() {
             transition={{ delay: 0.3 }}
             className="text-lg text-[#64748B] mb-6"
           >
-            Você completou o treino de <span className="font-bold text-[#2563EB]">{day.name}</span> com sucesso! 💪
+            Você completou o treino de <span className="font-bold text-[#2563EB]">{day.name}</span>{" "}
+            com sucesso! 💪
           </motion.p>
 
           {/* Stats */}
@@ -238,9 +237,7 @@ export default function WorkoutPage() {
           >
             <p className="text-sm text-[#64748B] mb-2">Próximo treino:</p>
             <p className="text-2xl font-black text-[#2563EB]">{nextDay?.name || "Descanso"}</p>
-            {nextDay && (
-              <p className="text-xs text-[#64748B] mt-2">{nextDay.label}</p>
-            )}
+            {nextDay && <p className="text-xs text-[#64748B] mt-2">{nextDay.label}</p>}
           </motion.div>
 
           {/* Close Button */}
@@ -303,16 +300,14 @@ export default function WorkoutPage() {
         </div>
       </motion.div>
 
-
-
       {/* Exercise List */}
       <div className="px-4 mt-6 max-w-2xl mx-auto space-y-3 pb-4">
         <AnimatePresence>
           {day.exercises.map((exercise, exIdx) => {
-            const state = exerciseStates.find((e) => e.exerciseId === exercise.id);
+            const state = exerciseStates.find(e => e.exerciseId === exercise.id);
             if (!state) return null;
-            const allCompleted = state.sets.every((s) => s.completed);
-            const completedCount = state.sets.filter((s) => s.completed).length;
+            const allCompleted = state.sets.every(s => s.completed);
+            const completedCount = state.sets.filter(s => s.completed).length;
 
             return (
               <motion.div
@@ -328,13 +323,15 @@ export default function WorkoutPage() {
                 }`}
               >
                 {/* Exercise Header - Entire header is clickable */}
-                <div 
+                <div
                   className="w-full px-5 py-4 flex items-center gap-3 text-left transition-colors cursor-pointer hover:bg-[#2563EB]/5"
                   onClick={() => toggleExpand(exercise.id)}
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className={`font-black text-base ${allCompleted ? "text-[#2563EB]" : "text-[#0F172A]"}`}>
+                      <p
+                        className={`font-black text-base ${allCompleted ? "text-[#2563EB]" : "text-[#0F172A]"}`}
+                      >
                         {exercise.name}
                       </p>
                       {allCompleted && (
@@ -349,14 +346,18 @@ export default function WorkoutPage() {
                       )}
                     </div>
                     <p className="text-xs text-[#64748B] mt-1">
-                      <span className="font-semibold">{state.sets.length}x{exercise.defaultReps}</span>
+                      <span className="font-semibold">
+                        {state.sets.length}x{exercise.defaultReps}
+                      </span>
                       <span className="mx-2">•</span>
                       <span>{exercise.muscleGroup}</span>
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="text-right">
-                      <p className="text-xs font-bold text-[#2563EB]">{completedCount}/{state.sets.length}</p>
+                      <p className="text-xs font-bold text-[#2563EB]">
+                        {completedCount}/{state.sets.length}
+                      </p>
                     </div>
                     <motion.div
                       animate={{ rotate: state.expanded ? 180 : 0 }}
@@ -390,11 +391,13 @@ export default function WorkoutPage() {
                           }`}
                         >
                           {/* Set Number */}
-                          <div className={`font-black text-sm w-8 h-8 flex items-center justify-center rounded-lg ${
-                            set.completed
-                              ? "bg-[#2563EB] text-white"
-                              : "bg-white/50 text-[#64748B]"
-                          }`}>
+                          <div
+                            className={`font-black text-sm w-8 h-8 flex items-center justify-center rounded-lg ${
+                              set.completed
+                                ? "bg-[#2563EB] text-white"
+                                : "bg-white/50 text-[#64748B]"
+                            }`}
+                          >
                             {setIdx + 1}
                           </div>
 
@@ -403,13 +406,17 @@ export default function WorkoutPage() {
                             <input
                               type="number"
                               value={set.weight}
-                              onChange={(e) => updateSet(exercise.id, setIdx, "weight", e.target.value)}
+                              onChange={e =>
+                                updateSet(exercise.id, setIdx, "weight", e.target.value)
+                              }
                               className="w-12 text-center text-xs font-bold bg-white/70 text-[#0F172A] rounded-lg px-1.5 py-1.5 outline-none border border-white/50 focus:border-[#2563EB] focus:bg-white transition-all"
                               placeholder="0"
                               inputMode="decimal"
-                              onClick={(e) => e.stopPropagation()}
+                              onClick={e => e.stopPropagation()}
                             />
-                            <span className="text-xs font-semibold text-[#64748B] whitespace-nowrap">kg</span>
+                            <span className="text-xs font-semibold text-[#64748B] whitespace-nowrap">
+                              kg
+                            </span>
                           </div>
 
                           {/* Reps Input */}
@@ -417,20 +424,22 @@ export default function WorkoutPage() {
                             <input
                               type="number"
                               value={set.reps}
-                              onChange={(e) => updateSet(exercise.id, setIdx, "reps", e.target.value)}
+                              onChange={e => updateSet(exercise.id, setIdx, "reps", e.target.value)}
                               className="w-12 text-center text-xs font-bold bg-white/70 text-[#0F172A] rounded-lg px-1.5 py-1.5 outline-none border border-white/50 focus:border-[#2563EB] focus:bg-white transition-all"
                               placeholder="0"
                               inputMode="numeric"
-                              onClick={(e) => e.stopPropagation()}
+                              onClick={e => e.stopPropagation()}
                             />
-                            <span className="text-xs font-semibold text-[#64748B] whitespace-nowrap">reps</span>
+                            <span className="text-xs font-semibold text-[#64748B] whitespace-nowrap">
+                              reps
+                            </span>
                           </div>
 
                           {/* Complete Button */}
                           <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation();
                               toggleSetComplete(exercise.id, setIdx);
                             }}

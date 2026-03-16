@@ -3,15 +3,7 @@
 // Layout: Exercise selector + line chart + history log
 
 import { motion } from "framer-motion";
-import {
-  ArrowLeft,
-  BarChart3,
-  Calendar,
-  Dumbbell,
-  TrendingUp,
-  Trophy,
-  Zap,
-} from "lucide-react";
+import { ArrowLeft, BarChart3, Calendar, Dumbbell, TrendingUp, Trophy, Zap } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import {
@@ -41,12 +33,8 @@ const allExercises = defaultWorkoutProgram
 
 export default function ProgressPage() {
   const [, setLocation] = useLocation();
-  const [selectedExerciseId, setSelectedExerciseId] = useState(
-    allExercises[0]?.id ?? ""
-  );
-  const [chartMetric, setChartMetric] = useState<"maxWeight" | "totalVolume">(
-    "maxWeight"
-  );
+  const [selectedExerciseId, setSelectedExerciseId] = useState(allExercises[0]?.id ?? "");
+  const [chartMetric, setChartMetric] = useState<"maxWeight" | "totalVolume">("maxWeight");
 
   const allLogs = getProgressLogs();
 
@@ -55,7 +43,7 @@ export default function ProgressPage() {
       allLogs
         .filter(l => l.exerciseId === selectedExerciseId)
         .sort((a, b) => a.date.localeCompare(b.date)),
-    [allLogs, selectedExerciseId]
+    [allLogs, selectedExerciseId],
   );
 
   const chartData = useMemo(
@@ -65,13 +53,11 @@ export default function ProgressPage() {
         maxWeight: l.maxWeight,
         totalVolume: l.totalVolume,
       })),
-    [exerciseLogs]
+    [exerciseLogs],
   );
 
   const selectedExercise = allExercises.find(e => e.id === selectedExerciseId);
-  const mgColor = selectedExercise
-    ? getMuscleGroupColor(selectedExercise.muscleGroup)
-    : "#00FF87";
+  const mgColor = selectedExercise ? getMuscleGroupColor(selectedExercise.muscleGroup) : "#00FF87";
 
   // Overall stats
   const totalWorkouts = new Set(allLogs.map(l => l.date)).size;
@@ -101,8 +87,7 @@ export default function ProgressPage() {
   const prevLog = exerciseLogs[exerciseLogs.length - 2];
   const improvement =
     lastLog && prevLog
-      ? ((lastLog.maxWeight - prevLog.maxWeight) / (prevLog.maxWeight || 1)) *
-        100
+      ? ((lastLog.maxWeight - prevLog.maxWeight) / (prevLog.maxWeight || 1)) * 100
       : null;
 
   return (
@@ -140,11 +125,7 @@ export default function ProgressPage() {
           <StatCard
             icon={<Zap size={14} />}
             label="Volume Total"
-            value={
-              totalVolume > 1000
-                ? `${(totalVolume / 1000).toFixed(1)}k`
-                : `${totalVolume}kg`
-            }
+            value={totalVolume > 1000 ? `${(totalVolume / 1000).toFixed(1)}k` : `${totalVolume}kg`}
             color="#1D4ED8"
           />
         </motion.div>
@@ -189,29 +170,19 @@ export default function ProgressPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="font-bold text-[#0F172A] text-sm">
-                  {selectedExercise.name}
-                </h3>
-                <p className="text-xs text-[#64748B]">
-                  {selectedExercise.muscleGroup}
-                </p>
+                <h3 className="font-bold text-[#0F172A] text-sm">{selectedExercise.name}</h3>
+                <p className="text-xs text-[#64748B]">{selectedExercise.muscleGroup}</p>
               </div>
               <div className="flex gap-2">
                 {currentPR > 0 && (
                   <div className="text-right">
-                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">
-                      PR
-                    </p>
-                    <p className="font-black text-base text-[#2563EB]">
-                      {currentPR}kg
-                    </p>
+                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">PR</p>
+                    <p className="font-black text-base text-[#2563EB]">{currentPR}kg</p>
                   </div>
                 )}
                 {improvement !== null && (
                   <div className="text-right ml-3">
-                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">
-                      Última
-                    </p>
+                    <p className="text-[10px] text-[#64748B] uppercase tracking-wider">Última</p>
                     <p
                       className={`font-black text-base ${improvement >= 0 ? "text-[#2563EB]" : "text-red-400"}`}
                     >
@@ -283,20 +254,14 @@ export default function ProgressPage() {
               <div className="h-40 flex flex-col items-center justify-center text-[#64748B]">
                 <BarChart3 size={32} className="mb-2 opacity-30" />
                 <p className="text-sm">Nenhum dado ainda</p>
-                <p className="text-xs mt-1">
-                  Complete um treino para ver sua progressão
-                </p>
+                <p className="text-xs mt-1">Complete um treino para ver sua progressão</p>
               </div>
             )}
           </motion.div>
         )}
 
         {/* History Log */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
           <h2 className="text-xs font-bold tracking-widest text-[#64748B] uppercase mb-3">
             Histórico — {selectedExercise?.name}
           </h2>
@@ -309,11 +274,7 @@ export default function ProgressPage() {
           ) : (
             <div className="space-y-2">
               {[...exerciseLogs].reverse().map((log, idx) => (
-                <LogEntry
-                  key={`${log.date}-${idx}`}
-                  log={log}
-                  color="#2563EB"
-                />
+                <LogEntry key={`${log.date}-${idx}`} log={log} color="#2563EB" />
               ))}
             </div>
           )}
@@ -336,14 +297,9 @@ function StatCard({
 }) {
   return (
     <div className="bg-white/80 rounded-2xl p-3 text-center shadow-md border-2 border-[#DBEAFE]">
-      <div
-        className="flex items-center justify-center gap-1 mb-1"
-        style={{ color }}
-      >
+      <div className="flex items-center justify-center gap-1 mb-1" style={{ color }}>
         {icon}
-        <span className="text-[9px] font-bold uppercase tracking-wider">
-          {label}
-        </span>
+        <span className="text-[9px] font-bold uppercase tracking-wider">{label}</span>
       </div>
       <p className="font-black text-[#0F172A] text-lg leading-none">{value}</p>
     </div>
@@ -354,17 +310,11 @@ function LogEntry({ log, color }: { log: ProgressEntry; color: string }) {
   const completedSets = log.sets.filter(s => s.completed);
   return (
     <div className="bg-white/80 rounded-xl px-4 py-3 flex items-center gap-3 shadow-md border-2 border-[#DBEAFE]">
-      <div
-        className="w-2 h-2 rounded-full flex-shrink-0"
-        style={{ background: color }}
-      />
+      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
       <div className="flex-1 min-w-0">
-        <p className="text-[#0F172A] text-sm font-bold">
-          {formatDate(log.date)}
-        </p>
+        <p className="text-[#0F172A] text-sm font-bold">{formatDate(log.date)}</p>
         <p className="text-[#64748B] text-xs mt-0.5">
-          {completedSets.length} séries · Máx: {log.maxWeight}kg · Vol:{" "}
-          {log.totalVolume}kg
+          {completedSets.length} séries · Máx: {log.maxWeight}kg · Vol: {log.totalVolume}kg
         </p>
         <div className="flex gap-1 mt-1.5 flex-wrap">
           {completedSets.slice(0, 4).map((s, i) => (
@@ -377,9 +327,7 @@ function LogEntry({ log, color }: { log: ProgressEntry; color: string }) {
             </span>
           ))}
           {completedSets.length > 4 && (
-            <span className="text-[10px] text-[#64748B]">
-              +{completedSets.length - 4}
-            </span>
+            <span className="text-[10px] text-[#64748B]">+{completedSets.length - 4}</span>
           )}
         </div>
       </div>

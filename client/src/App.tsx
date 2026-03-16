@@ -2,18 +2,25 @@
 // Design: Dark Athletic Premium | Space Grotesk + Inter | Green Neon #00FF87
 
 import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import { useEffect } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import Home from "./pages/Home";
 import WorkoutPage from "./pages/WorkoutPage";
 import ProgressPage from "./pages/ProgressPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import TreinoPage from "./pages/TreinoPage";
+import ProfessionalsPage from "./pages/ProfessionalsPage";
+import ConversationPage from "./pages/ConversationPage";
+import PersonalDashboardPage from "./pages/PersonalDashboardPage";
+import NutritionistDashboardPage from "./pages/NutritionistDashboardPage";
+import PersonalClientDetailPage from "./pages/PersonalClientDetailPage";
+import NutritionistClientDetailPage from "./pages/NutritionistClientDetailPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { initializeWeeklyReset } from "@/lib/workoutData";
 
 function Router() {
@@ -26,6 +33,28 @@ function Router() {
       <Route path={"/progress"} component={ProgressPage} />
       <Route path={"/dashboard"} component={DashboardPage} />
       <Route path={"/profile"} component={ProfilePage} />
+      <Route path={"/profissionais"} component={ProfessionalsPage} />
+      <Route path={"/conversa/:conversationId"} component={ConversationPage} />
+      <Route path={"/painel/personal"}>
+        <ProtectedRoute requiredRoles={["personal"]}>
+          <PersonalDashboardPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/painel/personal/clientes/:userId"}>
+        <ProtectedRoute requiredRoles={["personal"]}>
+          <PersonalClientDetailPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/painel/nutricionista"}>
+        <ProtectedRoute requiredRoles={["nutritionist"]}>
+          <NutritionistDashboardPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/painel/nutricionista/clientes/:userId"}>
+        <ProtectedRoute requiredRoles={["nutritionist"]}>
+          <NutritionistClientDetailPage />
+        </ProtectedRoute>
+      </Route>
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
@@ -41,7 +70,7 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
-        <TooltipProvider>
+        <AuthProvider>
           <Toaster
             theme="dark"
             toastOptions={{
@@ -53,7 +82,7 @@ function App() {
             }}
           />
           <Router />
-        </TooltipProvider>
+        </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

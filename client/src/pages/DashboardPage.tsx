@@ -46,7 +46,8 @@ import {
   type ProgressEntry,
 } from "@/lib/workoutData";
 
-const PROGRESS_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417068037/RxHqAgESmY5TyESbD3A4jy/gym-progress-visual-b3bEaJ6GjqhVQFj4WsWWUu.webp";
+const PROGRESS_BG =
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663417068037/RxHqAgESmY5TyESbD3A4jy/gym-progress-visual-b3bEaJ6GjqhVQFj4WsWWUu.webp";
 
 const NEON_GREEN = "#00FF87";
 const NEON_BLUE = "#00D4FF";
@@ -59,8 +60,8 @@ const CHART_COLORS = [NEON_GREEN, NEON_BLUE, NEON_ORANGE, NEON_PURPLE, NEON_PINK
 
 // Program overview data
 const programData = defaultWorkoutProgram
-  .filter((d) => !d.isRestDay)
-  .map((d) => ({
+  .filter(d => !d.isRestDay)
+  .map(d => ({
     day: d.shortLabel,
     exercises: d.exercises.length,
     color: d.color,
@@ -70,9 +71,9 @@ const programData = defaultWorkoutProgram
 
 // Muscle group frequency across the week
 const muscleGroupFreq: Record<string, number> = {};
-defaultWorkoutProgram.forEach((d) => {
+defaultWorkoutProgram.forEach(d => {
   if (!d.isRestDay) {
-    d.muscleGroups.forEach((mg) => {
+    d.muscleGroups.forEach(mg => {
       muscleGroupFreq[mg] = (muscleGroupFreq[mg] ?? 0) + 1;
     });
   }
@@ -83,7 +84,7 @@ const muscleGroupData = Object.entries(muscleGroupFreq)
   .sort((a, b) => b.value - a.value);
 
 // Radar data for muscle balance
-const radarData = muscleGroupData.map((m) => ({
+const radarData = muscleGroupData.map(m => ({
   subject: m.name,
   value: m.value,
   fullMark: 3,
@@ -97,18 +98,19 @@ export default function DashboardPage() {
   const completedWorkouts = getCompletedWorkouts();
 
   // Stats
-  const totalWorkoutDays = new Set(allLogs.map((l) => l.date)).size;
+  const totalWorkoutDays = new Set(allLogs.map(l => l.date)).size;
   const totalVolume = allLogs.reduce((a, l) => a + l.totalVolume, 0);
-  const totalSetsCompleted = allLogs.reduce((a, l) => a + l.sets.filter((s) => s.completed).length, 0);
-  const uniqueExercises = new Set(allLogs.map((l) => l.exerciseId)).size;
+  const totalSetsCompleted = allLogs.reduce(
+    (a, l) => a + l.sets.filter(s => s.completed).length,
+    0,
+  );
+  const uniqueExercises = new Set(allLogs.map(l => l.exerciseId)).size;
 
   // Volume by exercise (top 6)
   const volumeByExercise = useMemo(() => {
     const byEx: Record<string, { volume: number; name: string; color: string }> = {};
-    allLogs.forEach((l) => {
-      const ex = defaultWorkoutProgram
-        .flatMap((d) => d.exercises)
-        .find((e) => e.id === l.exerciseId);
+    allLogs.forEach(l => {
+      const ex = defaultWorkoutProgram.flatMap(d => d.exercises).find(e => e.id === l.exerciseId);
       if (!ex) return;
       if (!byEx[l.exerciseId]) {
         byEx[l.exerciseId] = {
@@ -127,7 +129,7 @@ export default function DashboardPage() {
   // Volume over time (last 14 days)
   const volumeOverTime = useMemo(() => {
     const byDate: Record<string, number> = {};
-    allLogs.forEach((l) => {
+    allLogs.forEach(l => {
       byDate[l.date] = (byDate[l.date] ?? 0) + l.totalVolume;
     });
     return Object.entries(byDate)
@@ -139,10 +141,8 @@ export default function DashboardPage() {
   // PRs by exercise
   const prs = useMemo(() => {
     const prMap: Record<string, { name: string; weight: number; color: string }> = {};
-    allLogs.forEach((l) => {
-      const ex = defaultWorkoutProgram
-        .flatMap((d) => d.exercises)
-        .find((e) => e.id === l.exerciseId);
+    allLogs.forEach(l => {
+      const ex = defaultWorkoutProgram.flatMap(d => d.exercises).find(e => e.id === l.exerciseId);
       if (!ex) return;
       if (!prMap[l.exerciseId] || l.maxWeight > prMap[l.exerciseId].weight) {
         prMap[l.exerciseId] = {
@@ -153,7 +153,7 @@ export default function DashboardPage() {
       }
     });
     return Object.values(prMap)
-      .filter((p) => p.weight > 0)
+      .filter(p => p.weight > 0)
       .sort((a, b) => b.weight - a.weight)
       .slice(0, 8);
   }, [allLogs]);
@@ -179,24 +179,26 @@ export default function DashboardPage() {
         <div className="absolute bottom-5 left-4 right-4 z-10">
           <div className="flex items-center gap-2 mb-1">
             <BarChart3 size={16} className="text-[#00FF87]" />
-            <span className="text-[#00FF87] text-xs font-bold tracking-widest uppercase">Dashboard</span>
+            <span className="text-[#00FF87] text-xs font-bold tracking-widest uppercase">
+              Dashboard
+            </span>
           </div>
           <h1 className="text-2xl font-black text-white">Resultados & Análise</h1>
-          <p className="text-gray-400 text-xs mt-0.5">Visualize seu progresso e programa de treinos</p>
+          <p className="text-gray-400 text-xs mt-0.5">
+            Visualize seu progresso e programa de treinos
+          </p>
         </div>
       </div>
 
       <div className="px-4 max-w-lg mx-auto">
         {/* Tabs */}
         <div className="flex gap-1 bg-[#1A1D27] rounded-2xl p-1 mb-6">
-          {(["overview", "progress", "program"] as const).map((tab) => (
+          {(["overview", "progress", "program"] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all capitalize ${
-                activeTab === tab
-                  ? "bg-[#00FF87] text-black"
-                  : "text-gray-500 hover:text-white"
+                activeTab === tab ? "bg-[#00FF87] text-black" : "text-gray-500 hover:text-white"
               }`}
             >
               {tab === "overview" ? "Visão Geral" : tab === "progress" ? "Progresso" : "Programa"}
@@ -206,11 +208,7 @@ export default function DashboardPage() {
 
         {/* ===== OVERVIEW TAB ===== */}
         {activeTab === "overview" && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            key="overview"
-          >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="overview">
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-3 mb-6">
               <BigStatCard
@@ -223,7 +221,9 @@ export default function DashboardPage() {
               <BigStatCard
                 icon={<Zap size={18} />}
                 label="Volume Total"
-                value={totalVolume > 1000 ? `${(totalVolume / 1000).toFixed(1)}t` : `${totalVolume}kg`}
+                value={
+                  totalVolume > 1000 ? `${(totalVolume / 1000).toFixed(1)}t` : `${totalVolume}kg`
+                }
                 sub="carga movimentada"
                 color={NEON_BLUE}
               />
@@ -276,11 +276,16 @@ export default function DashboardPage() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="flex-1 space-y-1.5">
-                  {muscleGroupData.map((m) => (
+                  {muscleGroupData.map(m => (
                     <div key={m.name} className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: m.color }} />
+                      <div
+                        className="w-2 h-2 rounded-full flex-shrink-0"
+                        style={{ background: m.color }}
+                      />
                       <span className="text-xs text-gray-300 flex-1">{m.name}</span>
-                      <span className="text-xs font-bold" style={{ color: m.color }}>{m.value}x</span>
+                      <span className="text-xs font-bold" style={{ color: m.color }}>
+                        {m.value}x
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -294,10 +299,7 @@ export default function DashboardPage() {
               <ResponsiveContainer width="100%" height={200}>
                 <RadarChart data={radarData}>
                   <PolarGrid stroke="#ffffff10" />
-                  <PolarAngleAxis
-                    dataKey="subject"
-                    tick={{ fill: "#6B7280", fontSize: 10 }}
-                  />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: "#6B7280", fontSize: 10 }} />
                   <Radar
                     name="Frequência"
                     dataKey="value"
@@ -324,11 +326,7 @@ export default function DashboardPage() {
 
         {/* ===== PROGRESS TAB ===== */}
         {activeTab === "progress" && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            key="progress"
-          >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="progress">
             {!hasData ? (
               <EmptyState />
             ) : (
@@ -336,7 +334,9 @@ export default function DashboardPage() {
                 {/* Volume Over Time */}
                 <SectionTitle title="Volume ao Longo do Tempo" icon={<TrendingUp size={14} />} />
                 <div className="bg-[#1A1D27] rounded-2xl p-4 mb-4">
-                  <p className="text-xs text-gray-500 mb-3">Volume total (kg) por sessão de treino</p>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Volume total (kg) por sessão de treino
+                  </p>
                   {volumeOverTime.length > 0 ? (
                     <ResponsiveContainer width="100%" height={180}>
                       <LineChart data={volumeOverTime}>
@@ -386,7 +386,11 @@ export default function DashboardPage() {
                   {volumeByExercise.length > 0 ? (
                     <ResponsiveContainer width="100%" height={200}>
                       <BarChart data={volumeByExercise} layout="vertical">
-                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" horizontal={false} />
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="#ffffff08"
+                          horizontal={false}
+                        />
                         <XAxis
                           type="number"
                           tick={{ fill: "#6B7280", fontSize: 10 }}
@@ -463,15 +467,13 @@ export default function DashboardPage() {
 
         {/* ===== PROGRAM TAB ===== */}
         {activeTab === "program" && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            key="program"
-          >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="program">
             {/* Weekly Program Overview */}
             <SectionTitle title="Exercícios por Dia" icon={<Calendar size={14} />} />
             <div className="bg-[#1A1D27] rounded-2xl p-4 mb-4">
-              <p className="text-xs text-gray-500 mb-3">Quantidade de exercícios por dia da semana</p>
+              <p className="text-xs text-gray-500 mb-3">
+                Quantidade de exercícios por dia da semana
+              </p>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={programData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" />
@@ -513,7 +515,7 @@ export default function DashboardPage() {
             <SectionTitle title="Detalhes por Dia" icon={<Dumbbell size={14} />} />
             <div className="space-y-3">
               {defaultWorkoutProgram
-                .filter((d) => !d.isRestDay)
+                .filter(d => !d.isRestDay)
                 .map((day, idx) => (
                   <motion.div
                     key={day.id}
@@ -522,10 +524,7 @@ export default function DashboardPage() {
                     transition={{ delay: idx * 0.07 }}
                     className="bg-[#1A1D27] rounded-2xl overflow-hidden"
                   >
-                    <div
-                      className="h-1"
-                      style={{ background: day.color }}
-                    />
+                    <div className="h-1" style={{ background: day.color }} />
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-3">
                         <div>
@@ -545,7 +544,7 @@ export default function DashboardPage() {
                         </span>
                       </div>
                       <div className="space-y-1.5">
-                        {day.exercises.map((ex) => (
+                        {day.exercises.map(ex => (
                           <div key={ex.id} className="flex items-center gap-2">
                             <div
                               className="w-1.5 h-1.5 rounded-full flex-shrink-0"
@@ -568,7 +567,9 @@ export default function DashboardPage() {
             <div className="mt-4 bg-[#1A1D27] rounded-2xl p-4 border border-white/5">
               <div className="flex items-center gap-2 mb-1">
                 <Flame size={14} className="text-gray-500" />
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Domingo</span>
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Domingo
+                </span>
               </div>
               <p className="text-gray-400 text-sm font-semibold">Descanso & Recuperação</p>
               <p className="text-gray-600 text-xs mt-1">
@@ -605,10 +606,7 @@ function BigStatCard({
   color: string;
 }) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      className="bg-[#1A1D27] rounded-2xl p-4"
-    >
+    <motion.div whileHover={{ scale: 1.02 }} className="bg-[#1A1D27] rounded-2xl p-4">
       <div className="flex items-center gap-1.5 mb-2" style={{ color }}>
         {icon}
         <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>

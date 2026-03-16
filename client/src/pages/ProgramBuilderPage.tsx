@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import {
-  ArrowLeft,
-  Clock3,
-  Flame,
-  HeartPulse,
-  Plus,
-  Scale,
-  Timer,
-  Trash2,
-} from "lucide-react";
+import { ArrowLeft, Clock3, Flame, HeartPulse, Plus, Scale, Timer, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   type Exercise,
@@ -92,8 +83,7 @@ function createEmptyDay(base: (typeof DAY_OPTIONS)[number]): WorkoutDay {
     muscleGroups: [],
     exercises: [],
     isRestDay: false,
-    color:
-      defaultWorkoutProgram.find((d) => d.dayOfWeek === base.dayOfWeek)?.color ?? "#2563EB",
+    color: defaultWorkoutProgram.find(d => d.dayOfWeek === base.dayOfWeek)?.color ?? "#2563EB",
   };
 }
 
@@ -127,7 +117,7 @@ export default function ProgramBuilderPage() {
   const [durationMinutes, setDurationMinutes] = useState<(typeof TRAINING_DURATIONS)[number]>(45);
 
   useEffect(() => {
-    setDays((prev) => {
+    setDays(prev => {
       const sorted = [...prev].sort(sortByWeekOrder);
       if (sorted.length <= daysPerWeek) return sorted;
       return sorted.slice(0, daysPerWeek);
@@ -135,15 +125,15 @@ export default function ProgramBuilderPage() {
   }, [daysPerWeek]);
 
   useEffect(() => {
-    setSelectedDayId((prev) => {
+    setSelectedDayId(prev => {
       if (!prev) return prev;
-      return days.some((d) => d.id === prev) ? prev : null;
+      return days.some(d => d.id === prev) ? prev : null;
     });
   }, [days]);
 
   function upsertDayAndSelect(base: (typeof DAY_OPTIONS)[number]) {
-    setDays((prev) => {
-      const existing = prev.find((d) => d.id === base.id);
+    setDays(prev => {
+      const existing = prev.find(d => d.id === base.id);
       if (existing) return prev;
       if (prev.length >= daysPerWeek) {
         toast("Limite de dias atingido", {
@@ -157,23 +147,23 @@ export default function ProgramBuilderPage() {
   }
 
   function removeDay(id: string) {
-    setDays((prev) => prev.filter((d) => d.id !== id));
-    setSelectedDayId((prev) => (prev === id ? null : prev));
+    setDays(prev => prev.filter(d => d.id !== id));
+    setSelectedDayId(prev => (prev === id ? null : prev));
   }
 
   function updateDay(id: string, patch: Partial<WorkoutDay>) {
-    setDays((prev) => prev.map((d) => (d.id === id ? { ...d, ...patch } : d)));
+    setDays(prev => prev.map(d => (d.id === id ? { ...d, ...patch } : d)));
   }
 
   function toggleDayMuscleGroup(dayId: string, muscleGroup: MuscleGroup) {
-    setDays((prev) =>
-      prev.map((d) => {
+    setDays(prev =>
+      prev.map(d => {
         if (d.id !== dayId) return d;
         const exists = d.muscleGroups.includes(muscleGroup);
         return {
           ...d,
           muscleGroups: exists
-            ? d.muscleGroups.filter((g) => g !== muscleGroup)
+            ? d.muscleGroups.filter(g => g !== muscleGroup)
             : [...d.muscleGroups, muscleGroup],
         };
       }),
@@ -181,8 +171,8 @@ export default function ProgramBuilderPage() {
   }
 
   function addExercise(dayId: string) {
-    setDays((prev) =>
-      prev.map((d) => {
+    setDays(prev =>
+      prev.map(d => {
         if (d.id !== dayId) return d;
         const index = d.exercises.length;
         const defaultMuscleGroup = d.muscleGroups[0] ?? "Pernas";
@@ -200,8 +190,8 @@ export default function ProgramBuilderPage() {
   }
 
   function addSuggestedExercise(dayId: string, suggestion: (typeof EXERCISE_SUGGESTIONS)[number]) {
-    setDays((prev) =>
-      prev.map((d) => {
+    setDays(prev =>
+      prev.map(d => {
         if (d.id !== dayId) return d;
         const index = d.exercises.length;
         const newExercise: Exercise = {
@@ -218,38 +208,36 @@ export default function ProgramBuilderPage() {
   }
 
   function updateExercise(dayId: string, exerciseId: string, patch: Partial<Exercise>) {
-    setDays((prev) =>
-      prev.map((d) => {
+    setDays(prev =>
+      prev.map(d => {
         if (d.id !== dayId) return d;
         return {
           ...d,
-          exercises: d.exercises.map((ex) =>
-            ex.id === exerciseId ? { ...ex, ...patch } : ex,
-          ),
+          exercises: d.exercises.map(ex => (ex.id === exerciseId ? { ...ex, ...patch } : ex)),
         };
       }),
     );
   }
 
   function removeExercise(dayId: string, exerciseId: string) {
-    setDays((prev) =>
-      prev.map((d) => {
+    setDays(prev =>
+      prev.map(d => {
         if (d.id !== dayId) return d;
-        return { ...d, exercises: d.exercises.filter((ex) => ex.id !== exerciseId) };
+        return { ...d, exercises: d.exercises.filter(ex => ex.id !== exerciseId) };
       }),
     );
   }
 
   function handleSave() {
     const sanitized = days
-      .map((d) => ({
+      .map(d => ({
         ...d,
         name: d.name.trim() || `Treino ${toWeekOrder(d.dayOfWeek)} - ${goal}`,
         muscleGroups: (d.muscleGroups.length > 0
           ? d.muscleGroups
-          : Array.from(new Set(d.exercises.map((ex) => ex.muscleGroup)))) as MuscleGroup[],
+          : Array.from(new Set(d.exercises.map(ex => ex.muscleGroup)))) as MuscleGroup[],
       }))
-      .filter((d) => d.exercises.length > 0);
+      .filter(d => d.exercises.length > 0);
 
     if (sanitized.length === 0) {
       toast("Programa vazio", {
@@ -269,9 +257,9 @@ export default function ProgramBuilderPage() {
   const orderedDayOptions = [...DAY_OPTIONS].sort(
     (a, b) => toWeekOrder(a.dayOfWeek) - toWeekOrder(b.dayOfWeek),
   );
-  const selectedDay = orderedDays.find((d) => d.id === selectedDayId) ?? null;
+  const selectedDay = orderedDays.find(d => d.id === selectedDayId) ?? null;
   const selectedDayIndex = selectedDay
-    ? orderedDays.findIndex((d) => d.id === selectedDay.id) + 1
+    ? orderedDays.findIndex(d => d.id === selectedDay.id) + 1
     : null;
 
   return (
@@ -295,7 +283,7 @@ export default function ProgramBuilderPage() {
             <section>
               <p className="text-[13px] font-extrabold mb-2">Objetivo do Treino</p>
               <div className="grid grid-cols-4 gap-2">
-                {TRAINING_GOALS.map((item) => (
+                {TRAINING_GOALS.map(item => (
                   <button
                     key={item}
                     type="button"
@@ -321,7 +309,7 @@ export default function ProgramBuilderPage() {
             <section>
               <p className="text-[13px] font-extrabold mb-2">Nível de Treino</p>
               <div className="grid grid-cols-3 gap-1.5 rounded-lg border border-white/10 bg-white/5 p-1">
-                {TRAINING_LEVELS.map((item) => (
+                {TRAINING_LEVELS.map(item => (
                   <button
                     key={item}
                     type="button"
@@ -341,7 +329,7 @@ export default function ProgramBuilderPage() {
             <section>
               <p className="text-[13px] font-extrabold mb-2">Divisão de Treino</p>
               <div className="grid grid-cols-3 gap-1.5 rounded-lg border border-white/10 bg-white/5 p-1">
-                {TRAINING_SPLITS.map((item) => (
+                {TRAINING_SPLITS.map(item => (
                   <button
                     key={item}
                     type="button"
@@ -368,11 +356,11 @@ export default function ProgramBuilderPage() {
                 min={2}
                 max={6}
                 value={daysPerWeek}
-                onChange={(e) => setDaysPerWeek(Number(e.target.value))}
+                onChange={e => setDaysPerWeek(Number(e.target.value))}
                 className="w-full accent-[#2563EB]"
               />
               <div className="mt-2 flex justify-between">
-                {[2, 3, 4, 5, 6].map((item) => (
+                {[2, 3, 4, 5, 6].map(item => (
                   <span
                     key={item}
                     className={`h-6 w-6 rounded-full text-[11px] font-bold flex items-center justify-center ${
@@ -390,16 +378,14 @@ export default function ProgramBuilderPage() {
             <section>
               <p className="text-[13px] font-extrabold mb-2">Montagem por Dia</p>
               <div className="space-y-2">
-                {orderedDayOptions.map((dayOption) => {
-                  const active = days.some((d) => d.id === dayOption.id);
+                {orderedDayOptions.map(dayOption => {
+                  const active = days.some(d => d.id === dayOption.id);
                   const selected = selectedDayId === dayOption.id;
                   return (
                     <div
                       key={dayOption.id}
                       className={`rounded-lg border px-3 py-2 flex items-center justify-between ${
-                        selected
-                          ? "border-[#3B82F6] bg-[#1E3A8A]/35"
-                          : "border-white/10 bg-white/5"
+                        selected ? "border-[#3B82F6] bg-[#1E3A8A]/35" : "border-white/10 bg-white/5"
                       }`}
                     >
                       <button
@@ -407,7 +393,9 @@ export default function ProgramBuilderPage() {
                         onClick={() => active && setSelectedDayId(dayOption.id)}
                         className={`text-left ${active ? "cursor-pointer" : "cursor-default"}`}
                       >
-                        <p className="text-[10px] font-black text-[#93C5FD]">{dayOption.shortLabel}</p>
+                        <p className="text-[10px] font-black text-[#93C5FD]">
+                          {dayOption.shortLabel}
+                        </p>
                         <p className="text-[12px] font-semibold text-white">{dayOption.label}</p>
                       </button>
 
@@ -455,14 +443,14 @@ export default function ProgramBuilderPage() {
                     className="mt-1 w-full bg-transparent text-[14px] font-black text-white border-b border-white/20 focus:border-[#60A5FA] outline-none pb-1"
                     placeholder={`Treino ${selectedDayIndex} - ${goal}`}
                     value={selectedDay.name}
-                    onChange={(e) => updateDay(selectedDay.id, { name: e.target.value })}
+                    onChange={e => updateDay(selectedDay.id, { name: e.target.value })}
                   />
                 </div>
 
                 <div>
                   <p className="text-[11px] font-bold text-[#BFDBFE] mb-2">Categoria do treino</p>
                   <div className="flex flex-wrap gap-2">
-                    {MUSCLE_GROUPS.map((group) => {
+                    {MUSCLE_GROUPS.map(group => {
                       const isSelected = selectedDay.muscleGroups.includes(group);
                       return (
                         <button
@@ -485,7 +473,7 @@ export default function ProgramBuilderPage() {
                 <div>
                   <p className="text-[11px] font-bold text-[#BFDBFE] mb-2">Escolha os Exercícios</p>
                   <div className="grid grid-cols-4 gap-2">
-                    {EXERCISE_SUGGESTIONS.map((item) => (
+                    {EXERCISE_SUGGESTIONS.map(item => (
                       <button
                         key={`${selectedDay.id}-${item.name}`}
                         type="button"
@@ -526,7 +514,7 @@ export default function ProgramBuilderPage() {
                             type="text"
                             className="flex-1 bg-transparent text-[12px] border-b border-white/20 focus:border-[#60A5FA] outline-none pb-1"
                             value={ex.name}
-                            onChange={(e) =>
+                            onChange={e =>
                               updateExercise(selectedDay.id, ex.id, {
                                 name: e.target.value,
                                 id: generateExerciseId(e.target.value, idx),
@@ -546,7 +534,7 @@ export default function ProgramBuilderPage() {
                             type="number"
                             min={1}
                             value={ex.defaultSets}
-                            onChange={(e) =>
+                            onChange={e =>
                               updateExercise(selectedDay.id, ex.id, {
                                 defaultSets: Math.max(1, Number(e.target.value) || 1),
                               })
@@ -558,7 +546,7 @@ export default function ProgramBuilderPage() {
                             type="number"
                             min={1}
                             value={ex.defaultReps}
-                            onChange={(e) =>
+                            onChange={e =>
                               updateExercise(selectedDay.id, ex.id, {
                                 defaultReps: Math.max(1, Number(e.target.value) || 1),
                               })
@@ -570,7 +558,7 @@ export default function ProgramBuilderPage() {
                             type="number"
                             min={0}
                             value={ex.defaultWeight}
-                            onChange={(e) =>
+                            onChange={e =>
                               updateExercise(selectedDay.id, ex.id, {
                                 defaultWeight: Math.max(0, Number(e.target.value) || 0),
                               })
@@ -582,13 +570,13 @@ export default function ProgramBuilderPage() {
                         <select
                           className="w-full rounded-md bg-white/10 border border-white/10 px-2 py-1 text-[11px] outline-none focus:border-[#60A5FA]"
                           value={ex.muscleGroup}
-                          onChange={(e) =>
+                          onChange={e =>
                             updateExercise(selectedDay.id, ex.id, {
                               muscleGroup: e.target.value as MuscleGroup,
                             })
                           }
                         >
-                          {MUSCLE_GROUPS.map((mg) => (
+                          {MUSCLE_GROUPS.map(mg => (
                             <option key={mg} value={mg} className="text-[#0F172A]">
                               {mg}
                             </option>
@@ -608,7 +596,7 @@ export default function ProgramBuilderPage() {
                 <span>Tempo: {durationMinutes} min</span>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {TRAINING_DURATIONS.map((item) => (
+                {TRAINING_DURATIONS.map(item => (
                   <button
                     key={item}
                     type="button"
@@ -637,4 +625,3 @@ export default function ProgramBuilderPage() {
     </div>
   );
 }
-
