@@ -182,6 +182,16 @@ type SelectedExerciseItem = ExerciseLibraryItem & {
 };
 type DayName = (typeof DAYS)[number];
 
+function createEmptyDayTrainings(): Record<DayName, SelectedExerciseItem[]> {
+  return DAYS.reduce(
+    (acc, day) => {
+      acc[day] = [];
+      return acc;
+    },
+    {} as Record<DayName, SelectedExerciseItem[]>
+  );
+}
+
 function getExerciseIcon(visual: (typeof EXERCISE_LIBRARY)[number]["visual"]) {
   if (visual === "bike") return Bike;
   if (visual === "activity") return Activity;
@@ -210,13 +220,7 @@ export default function TreinoPage() {
   >([]);
   const [dayTrainings, setDayTrainings] = useState<
     Record<DayName, SelectedExerciseItem[]>
-  >(
-    () =>
-      Object.fromEntries(DAYS.map(day => [day, []])) as Record<
-        DayName,
-        SelectedExerciseItem[]
-      >
-  );
+  >(() => createEmptyDayTrainings());
   const [exerciseFilter, setExerciseFilter] =
     useState<(typeof EXERCISE_FILTERS)[number]>("Todos");
   const [exerciseQuery, setExerciseQuery] = useState("");
@@ -271,10 +275,7 @@ export default function TreinoPage() {
       if (saved.trainingPeriod) setTrainingPeriod(saved.trainingPeriod);
       if (saved.dayTrainings) {
         const mergedTrainings = {
-          ...(Object.fromEntries(DAYS.map(day => [day, []])) as Record<
-            DayName,
-            SelectedExerciseItem[]
-          >),
+          ...createEmptyDayTrainings(),
           ...saved.dayTrainings,
         };
         setDayTrainings(mergedTrainings);
@@ -340,9 +341,7 @@ export default function TreinoPage() {
         "Você já possui treinos montados. Deseja excluir todos os treinos para trocar o objetivo?"
       );
       if (!confirmed) return;
-      const resetTrainings = Object.fromEntries(
-        DAYS.map(day => [day, []])
-      ) as Record<DayName, SelectedExerciseItem[]>;
+      const resetTrainings = createEmptyDayTrainings();
       setDayTrainings(resetTrainings);
       setSelectedExercises([]);
     }

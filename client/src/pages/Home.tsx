@@ -129,7 +129,7 @@ export default function Home() {
 
   return (
     <div
-      className="h-[100dvh] overflow-hidden text-[#0F172A]"
+      className="h-[100dvh] overflow-hidden overflow-x-hidden text-[#0F172A]"
       style={{
         backgroundImage:
           colorTheme === "pink"
@@ -139,13 +139,13 @@ export default function Home() {
         backgroundPosition: "center",
       }}
     >
-      <div className="h-full overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        <div className="px-4 max-w-[420px] mx-auto pt-3 pb-[calc(6.75rem+env(safe-area-inset-bottom))]">
+      <div className="h-full overflow-y-auto overscroll-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div className="px-4 max-w-[420px] mx-auto pt-2 pb-[calc(9rem+env(safe-area-inset-bottom))]">
         {/* Top brand / greeting card */}
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative mb-2.5"
+          className="relative mb-2"
         >
           <div className="absolute inset-x-6 -top-2 h-6 rounded-full bg-gradient-to-r from-[#DBEAFE] to-transparent blur-xl opacity-70" />
           <div className="relative flex items-center gap-3.5 rounded-2xl bg-white/95 border border-[#DBEAFE] shadow px-3 py-2.5">
@@ -189,10 +189,10 @@ export default function Home() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="mt-2.5 rounded-3xl overflow-hidden shadow-2xl border border-white/30"
+          className="mt-2 rounded-3xl overflow-hidden shadow-2xl border border-white/30"
         >
           <div
-            className="relative h-[88px]"
+            className="relative h-[82px]"
             style={{
               backgroundImage:
                 colorTheme === "pink"
@@ -251,7 +251,7 @@ export default function Home() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => setLocation(`/workout/${nextWorkoutDay.id}`)}
-          className="mt-2.5 w-full py-3 rounded-full text-white font-black tracking-wide text-[14px] transition-all"
+          className="mt-2 w-full py-2.5 rounded-full text-white font-black tracking-wide text-[14px] transition-all"
           style={{
             background:
               colorTheme === "pink"
@@ -271,7 +271,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.18 }}
-          className="mt-2.5 bg-white/90 backdrop-blur-md rounded-3xl px-3.5 pt-2.5 pb-3 border border-[#DBEAFE] shadow-[0_12px_26px_rgba(37,99,235,0.12)] overflow-hidden relative"
+          className="mt-2 bg-white/90 backdrop-blur-md rounded-3xl px-3.5 pt-2 pb-2.5 border border-[#DBEAFE] shadow-[0_12px_26px_rgba(37,99,235,0.12)] overflow-hidden relative"
         >
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#93C5FD] via-[#2563EB] to-[#1D4ED8]" />
           <div className="mb-2 flex items-center justify-between">
@@ -290,7 +290,7 @@ export default function Home() {
                 <button
                   key={dow}
                   onClick={() => setLocation(`/workout/${day.id}`)}
-                  className={`flex min-h-[50px] flex-col items-center justify-center rounded-2xl border px-1 py-1.5 transition-all ${
+                  className={`flex min-h-[46px] flex-col items-center justify-center rounded-2xl border px-1 py-1 transition-all ${
                     active
                       ? "border-[#93C5FD] bg-[#EFF6FF]"
                       : "border-[#DBEAFE] bg-white/70 hover:bg-white"
@@ -313,7 +313,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.24 }}
-          className="mt-3"
+          className="mt-2.5"
         >
           <div className="mb-2 flex items-end justify-between">
             <div>
@@ -325,8 +325,8 @@ export default function Home() {
             </span>
           </div>
 
-          <div className="grid grid-cols-3 gap-2.5">
-            <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-3 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[132px]">
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[118px]">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">Peso Atual</span>
                 <Scale size={14} className="text-[#1D4ED8]" />
@@ -340,7 +340,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-3 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[132px]">
+            <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[118px]">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">Treinos</span>
                 <Dumbbell size={14} className="text-[#1D4ED8]" />
@@ -352,13 +352,13 @@ export default function Home() {
               <div className="mt-2 text-[10px] text-[#64748B] font-semibold text-center">consistência</div>
             </div>
 
-            <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-3 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[132px]">
+            <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[118px]">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">Última Foto</span>
                 <ImageIcon size={14} className="text-[#1D4ED8]" />
               </div>
               <div
-                className="h-[82px] w-full rounded-[16px] border border-[#DBEAFE] overflow-hidden"
+                className="h-[72px] w-full rounded-[16px] border border-[#DBEAFE] overflow-hidden"
                 style={{
                   backgroundImage: `url(${latestProgressPhoto})`,
                   backgroundSize: "cover",

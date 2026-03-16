@@ -26,7 +26,7 @@ export default function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="mx-auto max-w-[420px] px-4 pb-4 pt-2.5">
+      <div className="mx-auto max-w-[420px] px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="rounded-3xl bg-white/90 backdrop-blur-md border border-[#DBEAFE] shadow-2xl px-3 py-2">
           <div className="grid grid-cols-4 gap-1">
             {items.map((it) => {
