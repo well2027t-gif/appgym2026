@@ -449,8 +449,8 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-2.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[112px]">
-                <div className="mb-2 flex items-center justify-between">
+              <div className="rounded-[22px] border border-[#DBEAFE] bg-white p-1.5 shadow-[0_10px_24px_rgba(37,99,235,0.08)] min-h-[112px]">
+                <div className="mb-1.5 px-1 flex items-center justify-between">
                   <span className="text-[10px] font-black text-[#1D4ED8] uppercase tracking-wide">
                     Última Foto
                   </span>
@@ -465,7 +465,7 @@ export default function Home() {
                   className="block w-full"
                 >
                   <div
-                    className="h-[120px] w-full rounded-[16px] border border-[#DBEAFE] overflow-hidden"
+                    className="h-[156px] w-full rounded-[12px] border border-[#DBEAFE] overflow-hidden"
                     style={{
                       backgroundImage: `url(${latestProgressPhoto})`,
                       backgroundSize: "cover",
