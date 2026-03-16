@@ -177,7 +177,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative mb-1.5"
+            className="relative mb-1.5 -mx-3"
           >
             <div className="absolute inset-x-6 -top-2 h-6 rounded-full bg-gradient-to-r from-[#DBEAFE] to-transparent blur-xl opacity-70" />
             <div className="relative flex items-center gap-3 rounded-2xl bg-white/95 border border-[#DBEAFE] shadow px-3 py-2">

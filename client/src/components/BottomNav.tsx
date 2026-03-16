@@ -33,7 +33,7 @@ export default function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="mx-auto max-w-[420px] px-4 pb-[calc(0.35rem+env(safe-area-inset-bottom))]">
+      <div className="mx-auto max-w-[420px] px-1 pb-[calc(0.35rem+env(safe-area-inset-bottom))]">
         <div className="relative overflow-hidden rounded-[22px] border border-[#DBEAFE] bg-white/96 backdrop-blur-xl py-1 shadow-[0_8px_24px_rgba(15,23,42,0.12)]">
           <div
             className="flex items-stretch"
