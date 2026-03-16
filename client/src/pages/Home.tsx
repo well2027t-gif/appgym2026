@@ -131,7 +131,7 @@ export default function Home() {
 
   return (
     <div
-      className="h-[100dvh] overflow-hidden overflow-x-hidden text-[#0F172A]"
+      className="min-h-dvh overflow-x-hidden text-[#0F172A]"
       style={{
         backgroundImage:
           colorTheme === "pink"
@@ -141,8 +141,7 @@ export default function Home() {
         backgroundPosition: "center",
       }}
     >
-      <div className="h-full overflow-y-auto overscroll-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        <div className="px-4 max-w-[420px] mx-auto pt-2 pb-[calc(12rem+env(safe-area-inset-bottom))]">
+      <div className="px-4 max-w-[420px] mx-auto pt-2 pb-[calc(14rem+env(safe-area-inset-bottom))]">
           {/* Top brand / greeting card */}
           <motion.div
             initial={{ opacity: 0, y: -6 }}
@@ -412,7 +411,6 @@ export default function Home() {
             </div>
           </motion.div>
 
-        </div>
       </div>
 
       <BottomNav />
