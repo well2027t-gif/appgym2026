@@ -14,6 +14,7 @@ import ProgressPage from "./pages/ProgressPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import TreinoPage from "./pages/TreinoPage";
+import AchievementsPage from "./pages/AchievementsPage";
 import ProfessionalsPage from "./pages/ProfessionalsPage";
 import ConversationPage from "./pages/ConversationPage";
 import PersonalDashboardPage from "./pages/PersonalDashboardPage";
@@ -31,6 +32,7 @@ function Router() {
       <Route path={"/treino"} component={TreinoPage} />
       <Route path={"/builder"} component={TreinoPage} />
       <Route path={"/progress"} component={ProgressPage} />
+      <Route path={"/conquistas"} component={AchievementsPage} />
       <Route path={"/dashboard"} component={DashboardPage} />
       <Route path={"/profile"} component={ProfilePage} />
       <Route path={"/profissionais"} component={ProfessionalsPage} />

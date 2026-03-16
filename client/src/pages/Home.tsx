@@ -2,7 +2,7 @@
 // Design: Clean, professional interface with smooth modal interactions
 
 import { motion } from "framer-motion";
-import { Bolt, Check, Dumbbell, Flame, ImageIcon, Scale, Trophy } from "lucide-react";
+import { Bolt, Check, Dumbbell, Flame, Gift, ImageIcon, Scale, Trophy } from "lucide-react";
 import { useMemo } from "react";
 import { useLocation } from "wouter";
 import {
@@ -385,6 +385,32 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
+
+          <motion.button
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 }}
+            whileTap={{ scale: 0.99 }}
+            onClick={() => setLocation("/conquistas")}
+            className="mt-2.5 w-full rounded-2xl border border-[#DBEAFE] bg-white/95 p-3 shadow-[0_10px_24px_rgba(37,99,235,0.08)] text-left"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.18em] font-black text-[#1D4ED8]">
+                  Novo painel
+                </p>
+                <p className="text-[15px] font-black text-[#0F172A]">
+                  Conquistas e recompensas
+                </p>
+                <p className="text-[11px] text-[#64748B] mt-0.5">
+                  Metas, desafios, consistência e prêmios reais.
+                </p>
+              </div>
+              <div className="h-12 w-12 rounded-xl bg-[#EFF6FF] border border-[#DBEAFE] text-[#1D4ED8] grid place-items-center shrink-0">
+                <Gift size={20} />
+              </div>
+            </div>
+          </motion.button>
         </div>
       </div>
 
