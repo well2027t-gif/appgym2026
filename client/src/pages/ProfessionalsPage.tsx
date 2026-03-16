@@ -265,8 +265,11 @@ export default function ProfessionalsPage() {
 
       {/* Modal: Usar cupom → tipo → profissional */}
       {couponModal && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-[#0F172A]/60 backdrop-blur-sm px-4 pb-8 pt-4">
-          <div className="w-full max-w-[420px] rounded-3xl bg-white border border-[#DBEAFE] shadow-2xl overflow-hidden">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0F172A]/60 backdrop-blur-sm p-4"
+          style={{ minHeight: "100dvh", paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+        >
+          <div className="w-full max-w-[420px] max-h-[85dvh] rounded-3xl bg-white border border-[#DBEAFE] shadow-2xl overflow-hidden flex flex-col">
             <div className="px-4 pt-4 pb-3 border-b border-[#EFF6FF] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="h-9 w-9 rounded-xl bg-[#DBEAFE] text-[#2563EB] flex items-center justify-center">
@@ -286,7 +289,7 @@ export default function ProfessionalsPage() {
               </button>
             </div>
 
-            <div className="p-4">
+            <div className="p-4 flex-1 min-h-0 overflow-y-auto">
               {couponStep === "type" && (
                 <>
                   <p className="text-[13px] font-black text-[#0F172A] mb-3">Usar com qual tipo de profissional?</p>

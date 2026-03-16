@@ -296,8 +296,13 @@ export default function AchievementsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] flex items-center justify-center px-6"
-            style={{ background: "rgba(10,15,40,0.75)", backdropFilter: "blur(6px)" }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            style={{
+              background: "rgba(10,15,40,0.75)",
+              backdropFilter: "blur(6px)",
+              minHeight: "100dvh",
+              paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+            }}
             onClick={() => setRewardPopup(null)}
           >
             <motion.div
@@ -305,7 +310,7 @@ export default function AchievementsPage() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.85, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 18, stiffness: 260 }}
-              className="relative w-full max-w-[340px] rounded-3xl overflow-hidden text-center shadow-2xl"
+              className="relative w-full max-w-[340px] max-h-[85dvh] rounded-3xl overflow-hidden text-center shadow-2xl overflow-y-auto"
               onClick={e => e.stopPropagation()}
             >
               {/* Gradient background */}
