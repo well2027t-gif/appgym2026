@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
+import { defaultWorkoutProgram, type MuscleGroup } from "@/lib/workoutData";
 
 const GOALS = [
   { id: "hipertrofia", label: "Hipertrofia", icon: Flame, hint: "Ganho de massa" },
@@ -70,21 +71,37 @@ const SPLIT_DESCRIPTIONS: Record<(typeof SPLITS)[number], { summary: string; exa
 const DURATIONS = [30, 45, 60] as const;
 const EXERCISE_FILTERS = ["Todos", "Cardio", "Peito", "Costas", "Pernas", "Abdômen"] as const;
 
-const EXERCISE_LIBRARY = [
-  { id: "supino", name: "Supino", muscle: "Peito", visual: "dumbbell" },
-  { id: "agachamento", name: "Agachamento", muscle: "Pernas", visual: "standing" },
-  { id: "remada", name: "Remada", muscle: "Costas", visual: "dumbbell" },
-  { id: "abdominal", name: "Abdominais", muscle: "Abdômen", visual: "activity" },
-  { id: "esteira", name: "Esteira", muscle: "Cardio", visual: "footprints" },
-  { id: "bike", name: "Bike", muscle: "Cardio", visual: "bike" },
-  { id: "escada", name: "Escada", muscle: "Cardio", visual: "stairs" },
-  { id: "corrida", name: "Corrida", muscle: "Cardio", visual: "footprints" },
-  { id: "corda", name: "Pular Corda", muscle: "Cardio", visual: "jump" },
-  { id: "burpee", name: "Burpee", muscle: "Cardio", visual: "activity" },
-  { id: "afundo", name: "Afundo", muscle: "Pernas", visual: "standing" },
-  { id: "desenvolvimento", name: "Desenvolvimento", muscle: "Ombro", visual: "dumbbell" },
-  { id: "triceps-corda", name: "Tríceps Corda", muscle: "Tríceps", visual: "dumbbell" },
-] as const;
+type ExerciseVisual = "bike" | "activity" | "footprints" | "standing" | "jump" | "dumbbell";
+type ExerciseLibraryItem = {
+  id: string;
+  name: string;
+  muscle: MuscleGroup;
+  visual: ExerciseVisual;
+};
+
+function visualByMuscle(muscle: MuscleGroup): ExerciseVisual {
+  if (muscle === "Cardio") return "footprints";
+  if (muscle === "Pernas" || muscle === "Glúteo" || muscle === "Posterior") return "standing";
+  if (muscle === "Abdômen") return "activity";
+  return "dumbbell";
+}
+
+const EXERCISE_LIBRARY: ExerciseLibraryItem[] = (() => {
+  const uniqueByName = new Map<string, ExerciseLibraryItem>();
+  for (const day of defaultWorkoutProgram) {
+    for (const exercise of day.exercises) {
+      const normalizedName = exercise.name.trim().toLowerCase();
+      if (!normalizedName || uniqueByName.has(normalizedName)) continue;
+      uniqueByName.set(normalizedName, {
+        id: exercise.id,
+        name: exercise.name,
+        muscle: exercise.muscleGroup,
+        visual: visualByMuscle(exercise.muscleGroup),
+      });
+    }
+  }
+  return Array.from(uniqueByName.values()).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+})();
 
 const WIZARD_STEPS = [
   "Objetivo",
@@ -99,7 +116,6 @@ const WIZARD_STEPS = [
 
 const TRAINING_WIZARD_STORAGE_KEY = "gymtracker_training_wizard_v1";
 
-type ExerciseLibraryItem = (typeof EXERCISE_LIBRARY)[number];
 type SelectedExerciseItem = ExerciseLibraryItem & {
   sets: number;
   reps: number;
@@ -315,14 +331,14 @@ export default function TreinoPage() {
 
   return (
     <div
-      className="h-screen overflow-hidden text-[#0F172A]"
+      className="min-h-[100dvh] overflow-hidden text-[#0F172A]"
       style={{
         backgroundImage:
           "radial-gradient(circle at top, rgba(191,219,254,0.65), rgba(255,255,255,0.9) 34%), linear-gradient(180deg, rgba(255,255,255,0.94), rgba(226,239,255,0.96))",
       }}
     >
       <div
-        className="h-full overflow-y-auto px-4 max-w-[420px] mx-auto pt-2 pb-24 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        className="min-h-[100dvh] overflow-y-auto px-4 max-w-[420px] mx-auto pt-2 pb-[calc(7.25rem+env(safe-area-inset-bottom))] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
         <div className="sticky top-0 z-20 bg-white/92 backdrop-blur-md rounded-2xl border border-[#DBEAFE] shadow px-3 py-2.5">
           <div className="flex items-center justify-between">
@@ -868,7 +884,7 @@ export default function TreinoPage() {
       )}
 
       <div className="fixed bottom-0 left-0 right-0 z-30">
-        <div className="max-w-[420px] mx-auto px-4 pb-5 pt-3 bg-transparent">
+        <div className="max-w-[420px] mx-auto px-4 pt-2 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-transparent">
           {step < WIZARD_STEPS.length - 1 ? (
             <div className="grid grid-cols-[108px_1fr] gap-2">
               <button
